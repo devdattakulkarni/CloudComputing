@@ -1,0 +1,6 @@
+requests
+gevent
+boto3
+pyparsing
+six
+flake8
