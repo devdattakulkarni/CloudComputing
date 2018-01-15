@@ -8,10 +8,13 @@ Steps
 ------
 
 1) Create virtual environment
+
    $ virtualenv venv
+
    $ source venv/bin/activate
 
 2) Install requirements in the virtual environment
+
    $ pip install -r requirements.txt
 
 3) Do AWS setup as outlined below
@@ -36,6 +39,7 @@ Examples
 1) VM: 
    - Examples demonstrating provisioning and management of Cloud VMs
    - Try:
+
      $ python VM/ec2_handler.py
 
 
