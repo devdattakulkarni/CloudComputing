@@ -105,7 +105,6 @@ class EC2ResourceHandler:
         
         # 4. Parse instance_id from the response
         instance_id = ''
-        # instance_id = response['Instances'][0]['InstanceId']
 
         return instance_id
 
