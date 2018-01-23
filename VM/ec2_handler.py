@@ -19,6 +19,8 @@ class EC2ResourceHandler:
                             datefmt='%m/%d/%Y %I:%M:%S %p')
         self.logger = logging.getLogger("EC2ResourceHandler")
 
+
+    # 1. Update the code to search for Amazon Linux AMI ID
     def _get_ami_id(self):
         self.logger.info("Retrieving AMI id")
         images_response = self.client.describe_images(
@@ -44,44 +46,89 @@ class EC2ResourceHandler:
                     ami_id = image['ImageId']
                     break
         return ami_id
+    
+    def _get_userdata(self):
+        user_data = """
+            #!/bin/bash
+            yum update -y
+            yum install -y httpd24 php56 mysql55-server php56-mysqlnd
+            service httpd start
+            chkconfig httpd on
+            groupadd www
+            usermod -a -G www ec2-user
+            chown -R root:www /var/www
+            chmod 2775 /var/www
+            find /var/www -type d -exec chmod 2775 {} +
+            find /var/www -type f -exec chmod 0664 {} +
+            echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
+        """
+        return user_data
+    
+    def _get_security_groups(self):
+        security_groups = []
+        
+        # 2. Get security group id of the 'default' security group
+        default_security_group_id = ''
+        
+        # 3. Create a new security group for HTTP traffic from anywhere
+        http_security_group_id = ''
 
-    def create(self, name='', flavor=''):
-        self.logger.info("Name:%s Flavor:%s" % (name, flavor))
+        security_groups.append(default_security_group_id)
+        security_groups.append(http_security_group_id)
+        return security_groups
 
-        ami_id = self._get_ami_id()
+    def create(self):
+        #ami_id = self._get_ami_id()
+
+        # Use Amazon Linux AMI
+        #ami_id = 'ami-f2d3638a'
+        
+        ami_id = ''
+        
+        if not ami_id:
+            print("AMI ID missing..Exiting")
+            exit()
+
+        user_data = self._get_userdata()
+
+        security_groups = self._get_security_groups()
 
         response = self.client.run_instances(
             ImageId=ami_id,
             InstanceType='t2.micro',
             MaxCount=1,
             MinCount=1,
-            Monitoring={'Enabled': False},            
+            Monitoring={'Enabled': False},
+            UserData=user_data,
+            SecurityGroupIds=security_groups
         )
-        return
+        
+        # 4. Parse instance_id from the response
+        instance_id = ''
 
+        return instance_id
+
+
+    # 5. Add logic to get information about the created instance
     def get(self):
         self.logger.info("Entered get")
-        # Add logic to get information about the created instance
-        # Use describe_instances call
 
-        # Add code to return from get only after the instance state becomes 'running'
+        # Use describe_instances call
         
         return
 
+
+    # 6. Add logic to terminate the created instance
     def delete(self):
         self.logger.info("Entered delete")
 
-        # Add logic to terminate the created instance
         # Use terminate_instances call
-
-        # Should return from the call only after the instance has been terminated (i.e.
-        # the instance is not available using the 'get' call
 
         return
 
 
 def main():
-    
+
     available_cloud_setup = common_functions.get_cloud_setup()
     if 'aws' not in available_cloud_setup:
         print("Cloud setup not found for aws.")
@@ -92,12 +139,15 @@ def main():
     ec2_handler = EC2ResourceHandler()
 
     print("Spinning up EC2 instance")
-    ec2_handler.create(name='test', flavor='test')
+
+    instance_id = ec2_handler.create()
     print("EC2 instance provisioning started")
 
-    ec2_handler.get()
+    raw_input("Hit Enter to continue>")
+    ec2_handler.get(instance_id)
 
-    ec2_handler.delete()
+    raw_input("Hit Enter to continue>")
+    ec2_handler.delete(instance_id)
 
 
 if __name__ == '__main__':
