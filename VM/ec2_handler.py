@@ -41,7 +41,7 @@ class EC2ResourceHandler:
         for image in images:
             if 'Name' in image:
                 image_name = image['Name']
-                # This image is available for free tier
+                # Modify following line to search for Amazon Linux AMI for us-east-1
                 if image_name.find("ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-2018") >= 0:
                     ami_id = image['ImageId']
                     break
@@ -69,8 +69,9 @@ class EC2ResourceHandler:
         
         # 2. Get security group id of the 'default' security group
         default_security_group_id = ''
-        
-        # 3. Create a new security group for HTTP traffic from anywhere
+
+        # 3. Create a new security group
+        # 4. Authorize ingress traffic for the group from anywhere to Port 80 for HTTP traffic
         http_security_group_id = ''
 
         security_groups.append(default_security_group_id)
@@ -78,13 +79,8 @@ class EC2ResourceHandler:
         return security_groups
 
     def create(self):
-        #ami_id = self._get_ami_id()
+        ami_id = self._get_ami_id()
 
-        # Use Amazon Linux AMI
-        #ami_id = 'ami-f2d3638a'
-        
-        ami_id = ''
-        
         if not ami_id:
             print("AMI ID missing..Exiting")
             exit()
@@ -103,14 +99,14 @@ class EC2ResourceHandler:
             SecurityGroupIds=security_groups
         )
         
-        # 4. Parse instance_id from the response
+        # 5. Parse instance_id from the response
         instance_id = ''
 
         return instance_id
 
 
-    # 5. Add logic to get information about the created instance
-    def get(self):
+    # 6. Add logic to get information about the created instance
+    def get(self, instance_id):
         self.logger.info("Entered get")
 
         # Use describe_instances call
@@ -118,8 +114,8 @@ class EC2ResourceHandler:
         return
 
 
-    # 6. Add logic to terminate the created instance
-    def delete(self):
+    # 7. Add logic to terminate the created instance
+    def delete(self, instance_id):
         self.logger.info("Entered delete")
 
         # Use terminate_instances call
