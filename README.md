@@ -52,3 +52,11 @@ Examples
    - Try:
 
      $ python VM/ec2_handler.py
+
+2) libvirt:
+   - Examples demonstrating managing guest OSes (domains) on a host using libvirt
+   - Try on EC2 Ubuntu 16.04 t2.micro instance
+
+     $ sudo apt install python-pip
+     $ pip install libvirt-python
+     $ python libvirt/domain_handler.py
