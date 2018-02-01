@@ -2,6 +2,11 @@ import ast
 import boto3
 import logging
 import os
+import requests
+
+from os.path import expanduser
+
+home_dir = expanduser("~")
 
 from common import common_functions
 
@@ -13,7 +18,25 @@ class EC2ResourceHandler:
     """EC2 Resource handler."""
 
     def __init__(self):
-        self.client = boto3.client('ec2', region_name='us-west-2')
+
+        self.client = ''
+
+        # When running on EC2 Instance
+        if not os.path.exists(home_dir + "/.aws"):
+            role_creds = requests.get('http://169.254.169.254/latest/meta-data/iam/security-credentials/DescribeImagesRole')
+            role_creds_json = role_creds.json()
+            access_key_id = role_creds_json['AccessKeyId']
+            secret_access_key = role_creds_json['SecretAccessKey']
+            session_token = role_creds_json['Token']
+
+            self.client = boto3.client('ec2',
+                                       region_name='us-west-2',
+                                       aws_access_key_id=access_key_id,
+                                       aws_secret_access_key=secret_access_key,
+                                       aws_session_token=session_token
+                                       )
+        else:
+            self.client = boto3.client('ec2')
 
         logging.basicConfig(filename=LOG_FILE_NAME,
                             level=logging.DEBUG, filemode='w',
