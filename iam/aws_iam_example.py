@@ -1,4 +1,3 @@
-import ast
 import boto3
 import logging
 import os
@@ -8,11 +7,22 @@ from os.path import expanduser
 
 home_dir = expanduser("~")
 
-from common import common_functions
-
 LOG_FILE_NAME = 'output.log'
 
-INSTANCE_TYPE="ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-2018"
+AMI_NAME="ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-2018"
+ROLENAME = "DescribeImagesRole"
+
+# DescribeImagesRole policy
+#    {
+#      "Version": "2012-10-17",
+#      "Statement": [
+#          {
+#              "Effect": "Allow",
+#              "Action": "ec2:Describe*",
+#              "Resource": "*"
+#          }
+#      ]
+#    }
 
 class EC2ResourceHandler:
     """EC2 Resource handler."""
@@ -23,7 +33,8 @@ class EC2ResourceHandler:
 
         # When running on EC2 Instance
         if not os.path.exists(home_dir + "/.aws"):
-            role_creds = requests.get('http://169.254.169.254/latest/meta-data/iam/security-credentials/DescribeImagesRole')
+            role_url = 'http://169.254.169.254/latest/meta-data/iam/security-credentials/' + ROLENAME
+            role_creds = requests.get(role_url)
             role_creds_json = role_creds.json()
             access_key_id = role_creds_json['AccessKeyId']
             secret_access_key = role_creds_json['SecretAccessKey']
@@ -44,8 +55,6 @@ class EC2ResourceHandler:
                             datefmt='%m/%d/%Y %I:%M:%S %p')
         self.logger = logging.getLogger("EC2ResourceHandler")
 
-
-    # 1. Update the code to search for Amazon Linux AMI ID
     def _get_ami_id(self):
         self.logger.info("Retrieving AMI id")
         images_response = self.client.describe_images(
@@ -61,105 +70,39 @@ class EC2ResourceHandler:
                       'Values': ['ebs']}
                      ],
         )
-        import pdb; pdb.set_trace()
         ami_id = ''
         images = images_response['Images']
         for image in images:
             if 'Name' in image:
                 image_name = image['Name']
-                # Modify following line to search for Amazon Linux AMI for us-east-1
-                if image_name.find(INSTANCE_TYPE) >= 0:
+                if image_name.find(AMI_NAME) >= 0:
                     ami_id = image['ImageId']
                     break
         return ami_id
     
-    def _get_userdata(self):
-        user_data = """
-            #!/bin/bash
-            yum update -y
-            yum install -y httpd24 php56 mysql55-server php56-mysqlnd
-            service httpd start
-            chkconfig httpd on
-            groupadd www
-            usermod -a -G www ec2-user
-            chown -R root:www /var/www
-            chmod 2775 /var/www
-            find /var/www -type d -exec chmod 2775 {} +
-            find /var/www -type f -exec chmod 0664 {} +
-            echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
-        """
-        return user_data
-    
-    def _get_security_groups(self):
-        security_groups = []
-        
-        # 2. Get security group id of the 'default' security group
-        default_security_group_id = ''
-
-        # 3. Create a new security group
-        # 4. Authorize ingress traffic for the group from anywhere to Port 80 for HTTP traffic
-        http_security_group_id = ''
-
-        security_groups.append(default_security_group_id)
-        security_groups.append(http_security_group_id)
-        return security_groups
-
     def describe_images(self):
-        ami_id = self._get_ami_id()
-        
+        ami_id = self._get_ami_id()        
         print("AMI ID: %s" % ami_id)
 
-
-    def create(self):
-        ami_id = self._get_ami_id()
-
-        if not ami_id:
-            print("AMI ID missing..Exiting")
-            exit()
-
-        user_data = self._get_userdata()
-
-        security_groups = self._get_security_groups()
-
+    def run_instances(self):
         response = self.client.run_instances(
-            ImageId=ami_id,
+            ImageId='ami-a9d736c9',
             InstanceType='t2.micro',
             MaxCount=1,
             MinCount=1,
             Monitoring={'Enabled': False},
-            UserData=user_data,
-            SecurityGroupIds=security_groups
         )
-        
-        # 5. Parse instance_id from the response
-        instance_id = ''
-
-        return instance_id
-
-
-    # 6. Add logic to get information about the created instance
-    def get(self, instance_id):
-        self.logger.info("Entered get")
-
-        # Use describe_instances call
-        
-        return
-
-
-    # 7. Add logic to terminate the created instance
-    def delete(self, instance_id):
-        self.logger.info("Entered delete")
-
-        # Use terminate_instances call
-
-        return
-
 
 def main():
-    print("Finding AMI ID for %s" % INSTANCE_TYPE)
     ec2_handler = EC2ResourceHandler()
+    
+    # 1) Invoking a call that is allowed by the Role ROLENAME
+    print("Finding AMI ID for %s" % AMI_NAME)
     instance_id = ec2_handler.describe_images()
 
+    # 2) Invoking a call that is not allowed by the Role ROLENAME
+    # print("Invoking run_instances()")
+    # ec2_handler.run_instances()
 
 if __name__ == '__main__':
     main()
