@@ -63,6 +63,7 @@ Examples
 
 3) ObjectStores:
    - Examples demonstrating use of Cloud Object Stores (e.g. AWS S3)
+   - Grant AmazonS3FullAccess permission to your IAM Service Account / User
    - Try:
 
      $ python ObjectStores/s3_handler.py
