@@ -60,3 +60,9 @@ Examples
      $ sudo apt install python-pip
      $ pip install libvirt-python
      $ python libvirt/domain_handler.py
+
+3) ObjectStores:
+   - Examples demonstrating use of Cloud Object Stores (e.g. AWS S3)
+   - Try:
+
+     $ python ObjectStores/s3_handler.py
