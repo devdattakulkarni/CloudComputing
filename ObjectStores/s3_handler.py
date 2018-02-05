@@ -5,8 +5,6 @@ import os
 import sys
 import traceback
 
-from common import common_functions
-
 LOG_FILE_NAME = 'output.log'
 
 REGION = 'us-west-2'
@@ -58,8 +56,8 @@ class S3Handler:
         try:
             response = self.client.head_bucket(Bucket=bucket_name)
         except Exception as e:
-            print(e)
-            traceback.print_exc(file=sys.stdout)
+            # print(e)
+            # traceback.print_exc(file=sys.stdout)
             
             response_code = e.response['Error']['Code']
             if response_code == '404':
@@ -208,13 +206,6 @@ class S3Handler:
 
 
 def main():
-
-    available_cloud_setup = common_functions.get_cloud_setup()
-    if 'aws' not in available_cloud_setup:
-        print("Cloud setup not found for aws.")
-        print("Doing the setup now..")
-        os.system("pip install awscli")
-        os.system("aws configure")
 
     s3_handler = S3Handler()
     
