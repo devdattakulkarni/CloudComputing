@@ -67,3 +67,7 @@ Examples
    - Try:
 
      $ python ObjectStores/s3_handler.py
+
+4) DynamoDB:
+   - Starter code for working with AWS DynamoDB
+   - Grant AmazonDynamoDBFullAccess to your IAM Service Account / User
