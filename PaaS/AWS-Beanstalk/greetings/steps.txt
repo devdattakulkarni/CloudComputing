@@ -1,0 +1,495 @@
+devdatta@devdatta-ThinkPad-T430: ~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ eb init
+
+Select a default region
+1) us-east-1 : US East (N. Virginia)
+2) us-west-1 : US West (N. California)
+3) us-west-2 : US West (Oregon)
+4) eu-west-1 : EU (Ireland)
+5) eu-central-1 : EU (Frankfurt)
+6) ap-south-1 : Asia Pacific (Mumbai)
+7) ap-southeast-1 : Asia Pacific (Singapore)
+8) ap-southeast-2 : Asia Pacific (Sydney)
+9) ap-northeast-1 : Asia Pacific (Tokyo)
+10) ap-northeast-2 : Asia Pacific (Seoul)
+11) sa-east-1 : South America (Sao Paulo)
+12) cn-north-1 : China (Beijing)
+(default is 3): 3
+
+Select an application to use
+1) greetings-python
+2) greetings
+3) [ Create new Application ]
+
+Enter Application Name
+(default is "greetings2"): 
+Application greetings2 has been created.
+
+It appears you are using Python. Is this correct?
+(y/n): y
+
+Select a platform version.
+1) Python 3.6
+2) Python 3.4
+3) Python
+4) Python 2.7
+5) Python 3.4 (Preconfigured - Docker)
+(default is 1): 4
+Do you want to set up SSH for your instances?
+(y/n): y
+
+Select a keypair.
+1) devdatta-keypair
+2) [ Create new KeyPair ]
+(default is 2): 1
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings/.elasticbeanstalk$ ls
+config.yml
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings/.elasticbeanstalk$ more config.yml 
+branch-defaults:
+  default:
+    environment: null
+    group_suffix: null
+global:
+  application_name: greetings2
+  default_ec2_keyname: devdatta-keypair
+  default_platform: Python 2.7
+  default_region: us-west-2
+  profile: null
+  sc: null
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings/.elasticbeanstalk$ cd ..
+
+devdatta@devdatta-ThinkPad-T430: ~/CloudComputing/PaaS/AWS-Beanstalk/greetingseb create greetings2-env -i t2.micro --database.engine mysql --database.instance db.t2.micro --database.username testuser --database.password testpassword
+
+Creating application version archive "app-180321_180230".
+Uploading greetings2/app-180321_180230.zip to S3. This may take a while.
+Upload Complete.
+Environment details for: greetings2-env
+  Application name: greetings2
+  Region: us-west-2
+  Deployed Version: app-180321_180230
+  Environment ID: e-phsw4aepr3
+  Platform: 64bit Amazon Linux 2017.09 v2.6.5 running Python 2.7
+  Tier: WebServer-Standard-1.0
+  CNAME: UNKNOWN
+  Updated: 2018-03-21 23:02:39.896000+00:00
+Printing Status:
+INFO: createEnvironment is starting.
+ -- Events -- (safe to Ctrl+C)INFO: Using elasticbeanstalk-us-west-2-882729463303 as Amazon S3 storage bucket for environment data.
+ -- Events -- (safe to Ctrl+C)INFO: Created security group named: sg-03a84b7d
+ -- Events -- (safe to Ctrl+C)INFO: Created security group named: awseb-e-phsw4aepr3-stack-AWSEBSecurityGroup-1KM1SX7OLE1WD
+ -- Events -- (safe to Ctrl+C)INFO: Created load balancer named: awseb-e-p-AWSEBLoa-I8SEHO1SKUOS
+ -- Events -- (safe to Ctrl+C)INFO: Environment health has transitioned to Pending. Initialization in progress (running for 4 seconds). There are no instances.
+ -- Events -- (safe to Ctrl+C)INFO: Created Auto Scaling launch configuration named: awseb-e-phsw4aepr3-stack-AWSEBAutoScalingLaunchConfiguration-1EAEQVKM3EJ0T
+ -- Events -- (safe to Ctrl+C)INFO: Created RDS database security group named: awseb-e-phsw4aepr3-stack-awsebrdsdbsecuritygroup-ame6eshhzrcc
+ -- Events -- (safe to Ctrl+C)INFO: Creating RDS database named: aathptosca131g. This may take a few minutes.
+ -- Events -- (safe to Ctrl+C)INFO: Created RDS database named: aathptosca131g
+ -- Events -- (safe to Ctrl+C)INFO: Created Auto Scaling group named: awseb-e-phsw4aepr3-stack-AWSEBAutoScalingGroup-1JONDOWL3CJMJ
+ -- Events -- (safe to Ctrl+C)INFO: Waiting for EC2 instances to launch. This may take a few minutes.
+ -- Events -- (safe to Ctrl+C)INFO: Created Auto Scaling group policy named: arn:aws:autoscaling:us-west-2:882729463303:scalingPolicy:332f8a77-6e6b-4ca1-880b-e57b872ef02b:autoScalingGroupName/awseb-e-phsw4aepr3-stack-AWSEBAutoScalingGroup-1JONDOWL3CJMJ:policyName/awseb-e-phsw4aepr3-stack-AWSEBAutoScalingScaleDownPolicy-WOTYFQ3Z2EFB
+ -- Events -- (safe to Ctrl+C)INFO: Created Auto Scaling group policy named: arn:aws:autoscaling:us-west-2:882729463303:scalingPolicy:708d61ad-f858-4e86-a3a4-356f5da8f49f:autoScalingGroupName/awseb-e-phsw4aepr3-stack-AWSEBAutoScalingGroup-1JONDOWL3CJMJ:policyName/awseb-e-phsw4aepr3-stack-AWSEBAutoScalingScaleUpPolicy-1FMDLD7I3K321
+ -- Events -- (safe to Ctrl+C)INFO: Created CloudWatch alarm named: awseb-e-phsw4aepr3-stack-AWSEBCloudwatchAlarmLow-1P86W9A23IXHH
+ -- Events -- (safe to Ctrl+C)INFO: Created CloudWatch alarm named: awseb-e-phsw4aepr3-stack-AWSEBCloudwatchAlarmHigh-1K9QJDOFRU6KS
+ -- Events -- (safe to Ctrl+C)INFO: Added instance [i-0f7ae48437324c1b2] to your environment.
+ -- Events -- (safe to Ctrl+C)INFO: Successfully launched environment: greetings2-env
+ -- Events -- (safe to Ctrl+C)                                
+Alert: An update to the EB CLI is available. Run "pip install --upgrade awsebcli" to get the latest version.
+
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ eb --help
+usage: eb (sub-commands ...) [options ...] {arguments ...}
+
+Welcome to the Elastic Beanstalk Command Line Interface (EB CLI). 
+For more information on a specific command, type "eb {cmd} --help".
+
+commands:
+  abort       Cancels an environment update or deployment.
+  clone       Clones an environment.
+  config      Edits the environment configuration settings or manages saved configurations.
+  console     Opens the environment in the AWS Elastic Beanstalk Management Console.
+  create      Creates a new environment.
+  deploy      Deploys your source code to the environment.
+  events      Gets recent events.
+  health      Shows detailed environment health.
+  init        Initializes your directory with the EB CLI. Creates the application.
+  labs        Extra experimental commands.
+  list        Lists all environments.
+  local       Runs commands on your local machine.
+  logs        Gets recent logs.
+  open        Opens the application URL in a browser.
+  platform    Manages platforms.
+  printenv    Shows the environment variables.
+  scale       Changes the number of running instances.
+  setenv      Sets environment variables.
+  ssh         Opens the SSH client to connect to an instance.
+  status      Gets environment information and status.
+  swap        Swaps two environment CNAMEs with each other.
+  terminate   Terminates the environment.
+  upgrade     Updates the environment to the most recent platform version.
+  use         Sets default environment.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --debug               toggle debug output
+  --quiet               suppress all output
+  -v, --verbose         toggle verbose output
+  --profile PROFILE     use a specific profile from your credential file
+  -r REGION, --region REGION
+                        use a specific region
+  --no-verify-ssl       do not verify AWS SSL certificates
+  --version             show application/version info
+
+To get started type "eb init". Then type "eb create" and "eb open"
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ eb open
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ eb logs
+Retrieving logs...
+[?1049h[?1h============== i-0f7ae48437324c1b2 ==============
+-------------------------------------
+/opt/python/log/supervisord.log
+-------------------------------------
+2018-03-21 23:09:18,739 CRIT Supervisor running as root (no user in config file)
+2018-03-21 23:09:18,753 INFO RPC interface 'supervisor' initialized
+2018-03-21 23:09:18,753 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2018-03-21 23:09:18,754 INFO supervisord started with pid 3030
+2018-03-21 23:09:19,756 INFO spawned: 'httpd' with pid 3113
+2018-03-21 23:09:20,842 INFO success: httpd entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2018-03-21 23:09:56,179 INFO stopped: httpd (exit status 0)
+2018-03-21 23:09:57,184 INFO spawned: 'httpd' with pid 3345
+2018-03-21 23:09:58,217 INFO success: httpd entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+
+
+
+-------------------------------------
+/var/log/httpd/error_log
+-------------------------------------
+[Wed Mar 21 23:09:19.843027 2018] [suexec:notice] [pid 3113] AH01232: suEXEC mechanism enabled (wrapper: /usr/sbin/suexec)
+[Wed Mar 21 23:09:19.856747 2018] [http2:warn] [pid 3113] AH10034: The mpm module (prefork.c) is not supported by mod_http2. The mpm determines how things are  processed in your server. HTTP/2 has more demands in this regard and the currently selected mpm will just not do. This is an advisory warning. Your server will  continue to work, but the HTTP/2 protocol will be inactive.
+[Wed Mar 21 23:09:19.856757 2018] [http2:warn] [pid 3113] AH02951: mod_ssl does not seem to be enabled
+[Wed Mar 21 23:09:19.857188 2018] [lbmethod_heartbeat:notice] [pid 3113] AH02282: No slotmem from mod_heartmonitor
+[Wed Mar 21 23:09:19.857222 2018] [:warn] [pid 3113] mod_wsgi: Compiled for Python/2.7.12.
+[Wed Mar 21 23:09:19.857226 2018] [:warn] [pid 3113] mod_wsgi: Runtime using Python/2.7.13.
+[Wed Mar 21 23:09:19.858902 2018] [mpm_prefork:notice] [pid 3113] AH00163: Apache/2.4.27 (Amazon) mod_wsgi/3.5 Python/2.7.13 configured -- resuming normal oper ations
+[Wed Mar 21 23:09:19.858917 2018] [core:notice] [pid 3113] AH00094: Command line: '/usr/sbin/httpd -D FOREGROUND'
+[Wed Mar 21 23:09:56.167214 2018] [mpm_prefork:notice] [pid 3113] AH00169: caught SIGTERM, shutting down
+[Wed Mar 21 23:09:57.217190 2018] [suexec:notice] [pid 3345] AH01232: suEXEC mechanism enabled (wrapper: /usr/sbin/suexec)
+[Wed Mar 21 23:09:57.231324 2018] [so:warn] [pid 3345] AH01574: module wsgi_module is already loaded, skipping
+[Wed Mar 21 23:09:57.233138 2018] [http2:warn] [pid 3345] AH10034: The mpm module (prefork.c) is not supported by mod_http2. The mpm determines how things are  processed in your server. HTTP/2 has more demands in this regard and the currently selected mpm will just not do. This is an advisory warning. Your server will  continue to work, but the HTTP/2 protocol will be inactive.
+[Wed Mar 21 23:09:57.233148 2018] [http2:warn] [pid 3345] AH02951: mod_ssl does not seem to be enabled
+[Wed Mar 21 23:09:57.233721 2018] [lbmethod_heartbeat:notice] [pid 3345] AH02282: No slotmem from mod_heartmonitor
+[Wed Mar 21 23:09:57.233779 2018] [:warn] [pid 3345] mod_wsgi: Compiled for Python/2.7.12.
+[Wed Mar 21 23:09:57.233783 2018] [:warn] [pid 3345] mod_wsgi: Runtime using Python/2.7.13.
+[Wed Mar 21 23:09:57.235951 2018] [mpm_prefork:notice] [pid 3345] AH00163: Apache/2.4.27 (Amazon) mod_wsgi/3.5 Python/2.7.13 configured -- resuming normal oper ations
+:[K[K[Wed Mar 21 23:09:57.235968 2018] [core:notice] [pid 3345] AH00094: Command line: '/usr/sbin/httpd -D FOREGROUND'
+[Wed Mar 21 23:10:00.072309 2018] [:error] [pid 3350] ---------Wed 23:10:00
+[Wed Mar 21 23:10:00.072336 2018] [:error] [pid 3350] Before create_table
+[Wed Mar 21 23:10:00.134521 2018] [:error] [pid 3350] Inside populate_data
+[Wed Mar 21 23:10:00.134548 2018] [:error] [pid 3350] DB: ebdb
+[Wed Mar 21 23:10:00.134554 2018] [:error] [pid 3350] Username: testuser
+[Wed Mar 21 23:10:00.134558 2018] [:error] [pid 3350] Password: testpassword
+[Wed Mar 21 23:10:00.134562 2018] [:error] [pid 3350] Hostname: aathptosca131g.cv0ju6xxr9ji.us-west-2.rds.amazonaws.com
+[Wed Mar 21 23:10:00.142165 2018] [:error] [pid 3350] Returning from populate_data
+[Wed Mar 21 23:10:00.142205 2018] [:error] [pid 3350] After create_table
+[Wed Mar 21 23:10:00.143067 2018] [:error] [pid 3350] Printing available environment variables
+[Wed Mar 21 23:10:00.143101 2018] [:error] [pid 3350] {'RDS_PORT': '3306', 'TERM': 'linux', 'SUPERVISOR_SERVER_URL': 'unix:///opt/python/run/supervisor.sock',  'SUPERVISOR_PROCESS_NAME': 'httpd', 'SHLVL': '0', 'PYTHONPATH': '/opt/python/current/app/:', 'UPSTART_JOB': 'supervisord', 'SUPERVISOR_ENABLED': '1', 'RDS_DB_N AME': 'ebdb', 'UPSTART_INSTANCE': '', 'PWD': '/opt/python/bundle/2/app', 'RDS_USERNAME': 'testuser', 'SUPERVISOR_GROUP_NAME': 'httpd', 'HOME': '/home/wsgi', 'P ATH': '/opt/python/run/venv/bin/:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin', 'RDS_PASSWORD': 'testpassword', 'RDS_HOSTNAME': 'aathptosca131g .cv0ju6xxr9ji.us-west-2.rds.amazonaws.com'}
+[Wed Mar 21 23:10:00.143109 2018] [:error] [pid 3350] Before displaying index.html
+[Wed Mar 21 23:10:00.143130 2018] [:error] [pid 3350] Inside query_data
+[Wed Mar 21 23:10:00.143136 2018] [:error] [pid 3350] DB: ebdb
+[Wed Mar 21 23:10:00.143140 2018] [:error] [pid 3350] Username: testuser
+[Wed Mar 21 23:10:00.143144 2018] [:error] [pid 3350] Password: testpassword
+[Wed Mar 21 23:10:00.143148 2018] [:error] [pid 3350] Hostname: aathptosca131g.cv0ju6xxr9ji.us-west-2.rds.amazonaws.com
+[Wed Mar 21 23:10:00.146118 2018] [:error] [pid 3350] Entries: [{'greeting': u'Hello, World!'}]
+[Wed Mar 21 23:11:53.379105 2018] [:error] [pid 3350] Printing available environment variables
+[Wed Mar 21 23:11:53.379164 2018] [:error] [pid 3350] {'RDS_PORT': '3306', 'TERM': 'linux', 'SUPERVISOR_SERVER_URL': 'unix:///opt/python/run/supervisor.sock',  'SUPERVISOR_PROCESS_NAME': 'httpd', 'SHLVL': '0', 'PYTHONPATH': '/opt/python/current/app/:', 'UPSTART_JOB': 'supervisord', 'SUPERVISOR_ENABLED': '1', 'RDS_DB_N AME': 'ebdb', 'UPSTART_INSTANCE': '', 'PWD': '/opt/python/bundle/2/app', 'RDS_USERNAME': 'testuser', 'SUPERVISOR_GROUP_NAME': 'httpd', 'HOME': '/home/wsgi', 'P ATH': '/opt/python/run/venv/bin/:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin', 'RDS_PASSWORD': 'testpassword', 'RDS_HOSTNAME': 'aathptosca131g .cv0ju6xxr9ji.us-west-2.rds.amazonaws.com'}
+[Wed Mar 21 23:11:53.379172 2018] [:error] [pid 3350] Before displaying index.html
+[Wed Mar 21 23:11:53.379187 2018] [:error] [pid 3350] Inside query_data
+[Wed Mar 21 23:11:53.379193 2018] [:error] [pid 3350] DB: ebdb
+[Wed Mar 21 23:11:53.379200 2018] [:error] [pid 3350] Username: testuser
+[Wed Mar 21 23:11:53.379205 2018] [:error] [pid 3350] Password: testpassword
+[Wed Mar 21 23:11:53.379225 2018] [:error] [pid 3350] Hostname: aathptosca131g.cv0ju6xxr9ji.us-west-2.rds.amazonaws.com
+[Wed Mar 21 23:11:53.411774 2018] [:error] [pid 3350] Entries: [{'greeting': u'Hello, World!'}]
+[Wed Mar 21 23:12:10.637940 2018] [:error] [pid 3350] Received request.
+[Wed Mar 21 23:12:10.638369 2018] [:error] [pid 3350] Hi from Austin
+[Wed Mar 21 23:12:10.684526 2018] [:error] [pid 3350] Printing available environment variables
+[Wed Mar 21 23:12:10.684577 2018] [:error] [pid 3350] {'RDS_PORT': '3306', 'TERM': 'linux', 'SUPERVISOR_SERVER_URL': 'unix:///opt/python/run/supervisor.sock',  'SUPERVISOR_PROCESS_NAME': 'httpd', 'SHLVL': '0', 'PYTHONPATH': '/opt/python/current/app/:', 'UPSTART_JOB': 'supervisord', 'SUPERVISOR_ENABLED': '1', 'RDS_DB_N AME': 'ebdb', 'UPSTART_INSTANCE': '', 'PWD': '/opt/python/bundle/2/app', 'RDS_USERNAME': 'testuser', 'SUPERVISOR_GROUP_NAME': 'httpd', 'HOME': '/home/wsgi', 'P :[K[KATH': '/opt/python/run/venv/bin/:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin', 'RDS_PASSWORD': 'testpassword', 'RDS_HOSTNAME': 'aathptosca131g .cv0ju6xxr9ji.us-west-2.rds.amazonaws.com'}
+[Wed Mar 21 23:12:10.684584 2018] [:error] [pid 3350] Before displaying index.html
+[Wed Mar 21 23:12:10.684596 2018] [:error] [pid 3350] Inside query_data
+[Wed Mar 21 23:12:10.684601 2018] [:error] [pid 3350] DB: ebdb
+[Wed Mar 21 23:12:10.684605 2018] [:error] [pid 3350] Username: testuser
+[Wed Mar 21 23:12:10.684609 2018] [:error] [pid 3350] Password: testpassword
+[Wed Mar 21 23:12:10.684613 2018] [:error] [pid 3350] Hostname: aathptosca131g.cv0ju6xxr9ji.us-west-2.rds.amazonaws.com
+[Wed Mar 21 23:12:10.687914 2018] [:error] [pid 3350] Entries: [{'greeting': u'Hello, World!'}, {'greeting': u'Hi from Austin'}]
+[Wed Mar 21 23:12:18.009054 2018] [:error] [pid 3350] Printing available environment variables
+[Wed Mar 21 23:12:18.009103 2018] [:error] [pid 3350] {'RDS_PORT': '3306', 'TERM': 'linux', 'SUPERVISOR_SERVER_URL': 'unix:///opt/python/run/supervisor.sock',  'SUPERVISOR_PROCESS_NAME': 'httpd', 'SHLVL': '0', 'PYTHONPATH': '/opt/python/current/app/:', 'UPSTART_JOB': 'supervisord', 'SUPERVISOR_ENABLED': '1', 'RDS_DB_N AME': 'ebdb', 'UPSTART_INSTANCE': '', 'PWD': '/opt/python/bundle/2/app', 'RDS_USERNAME': 'testuser', 'SUPERVISOR_GROUP_NAME': 'httpd', 'HOME': '/home/wsgi', 'P ATH': '/opt/python/run/venv/bin/:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/bin', 'RDS_PASSWORD': 'testpassword', 'RDS_HOSTNAME': 'aathptosca131g .cv0ju6xxr9ji.us-west-2.rds.amazonaws.com'}
+[Wed Mar 21 23:12:18.009119 2018] [:error] [pid 3350] Before displaying index.html
+[Wed Mar 21 23:12:18.009133 2018] [:error] [pid 3350] Inside query_data
+[Wed Mar 21 23:12:18.009138 2018] [:error] [pid 3350] DB: ebdb
+[Wed Mar 21 23:12:18.009142 2018] [:error] [pid 3350] Username: testuser
+[Wed Mar 21 23:12:18.009146 2018] [:error] [pid 3350] Password: testpassword
+[Wed Mar 21 23:12:18.009149 2018] [:error] [pid 3350] Hostname: aathptosca131g.cv0ju6xxr9ji.us-west-2.rds.amazonaws.com
+[Wed Mar 21 23:12:18.049318 2018] [:error] [pid 3350] Entries: [{'greeting': u'Hello, World!'}, {'greeting': u'Hi from Austin'}]
+
+
+
+-------------------------------------
+/var/log/httpd/access_log
+-------------------------------------
+127.0.0.1 (-) - - [21/Mar/2018:23:09:59 +0000] "GET / HTTP/1.1" 200 716 "-" "Python-urllib/2.7"
+172.31.35.175 (70.115.130.48) - - [21/Mar/2018:23:11:53 +0000] "GET / HTTP/1.1" 200 716 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Fi refox/50.0"
+172.31.35.175 (70.115.130.48) - - [21/Mar/2018:23:11:53 +0000] "GET /favicon.ico HTTP/1.1" 404 233 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/ 20100101 Firefox/50.0"
+172.31.35.175 (70.115.130.48) - - [21/Mar/2018:23:11:53 +0000] "GET /favicon.ico HTTP/1.1" 404 233 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/ 20100101 Firefox/50.0"
+172.31.35.175 (70.115.130.48) - - [21/Mar/2018:23:12:10 +0000] "POST /add_to_db HTTP/1.1" 200 788 "http://greetings2-env.2mbcsk8i3g.us-west-2.elasticbeanstalk. com/" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0"
+172.31.35.175 (70.115.130.48) - - [21/Mar/2018:23:12:18 +0000] "GET / HTTP/1.1" 200 788 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Fi refox/50.0"
+
+
+
+:[K[K-------------------------------------
+/var/log/eb-activity.log
+-------------------------------------
+  Archive:  /opt/elasticbeanstalk/deploy/appsource/source_bundle
+    inflating: /opt/python/ondeck/app/steps-script  
+    inflating: /opt/python/ondeck/app/Dockerfile.bak  
+    inflating: /opt/python/ondeck/app/README.txt  
+    inflating: /opt/python/ondeck/app/requirements.txt  
+    inflating: /opt/python/ondeck/app/application.py  
+     creating: /opt/python/ondeck/app/templates/
+    inflating: /opt/python/ondeck/app/templates/index.html  
+[2018-03-21T23:09:49.363Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/AppDeployPreHook/03deploy.py] : Starting activity...
+[2018-03-21T23:09:53.422Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/AppDeployPreHook/03deploy.py] : Completed activity. Result :
+  Collecting https://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-1.0.12.tar.gz (from -r /opt/python/ondeck/app/requirements.txt (line 2))
+    Downloading https://cdn.mysql.com/Downloads/Connector-Python/mysql-connector-python-1.0.12.tar.gz (230kB)
+  Collecting flask (from -r /opt/python/ondeck/app/requirements.txt (line 1))
+    Downloading Flask-0.12.2-py2.py3-none-any.whl (83kB)
+  Collecting itsdangerous>=0.21 (from flask->-r /opt/python/ondeck/app/requirements.txt (line 1))
+    Downloading itsdangerous-0.24.tar.gz (46kB)
+  Collecting Jinja2>=2.4 (from flask->-r /opt/python/ondeck/app/requirements.txt (line 1))
+    Downloading Jinja2-2.10-py2.py3-none-any.whl (126kB)
+  Collecting Werkzeug>=0.7 (from flask->-r /opt/python/ondeck/app/requirements.txt (line 1))
+    Downloading Werkzeug-0.14.1-py2.py3-none-any.whl (322kB)
+  Collecting click>=2.0 (from flask->-r /opt/python/ondeck/app/requirements.txt (line 1))
+    Downloading click-6.7-py2.py3-none-any.whl (71kB)
+  Collecting MarkupSafe>=0.23 (from Jinja2>=2.4->flask->-r /opt/python/ondeck/app/requirements.txt (line 1))
+    Downloading MarkupSafe-1.0.tar.gz
+  Building wheels for collected packages: mysql-connector-python, itsdangerous, MarkupSafe
+    Running setup.py bdist_wheel for mysql-connector-python: started
+    Running setup.py bdist_wheel for mysql-connector-python: finished with status 'done'
+    Stored in directory: /root/.cache/pip/wheels/d0/ed/d6/886af6a2b5c61f2397d9bb50e764c4ff40b2a529fa90daeea2
+    Running setup.py bdist_wheel for itsdangerous: started
+    Running setup.py bdist_wheel for itsdangerous: finished with status 'done'
+    Stored in directory: /root/.cache/pip/wheels/fc/a8/66/24d655233c757e178d45dea2de22a04c6d92766abfb741129a
+    Running setup.py bdist_wheel for MarkupSafe: started
+    Running setup.py bdist_wheel for MarkupSafe: finished with status 'done'
+    Stored in directory: /root/.cache/pip/wheels/88/a7/30/e39a54a87bcbe25308fa3ca64e8ddc75d9b3e5afa21ee32d57
+  Successfully built mysql-connector-python itsdangerous MarkupSafe
+  Installing collected packages: itsdangerous, MarkupSafe, Jinja2, Werkzeug, click, flask, mysql-connector-python
+  Successfully installed Jinja2-2.10 MarkupSafe-1.0 Werkzeug-0.14.1 click-6.7 flask-0.12.2 itsdangerous-0.24 mysql-connector-python-1.0.12
+  You are using pip version 9.0.1, however version 9.0.2 is available.
+:[K[K  You should consider upgrading via the 'pip install --upgrade pip' command.
+[2018-03-21T23:09:53.422Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/AppDeployPreHook/04configen.py] : Starting activity...
+[2018-03-21T23:09:54.798Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/AppDeployPreHook/04configen.py] : Completed activity.
+[2018-03-21T23:09:54.798Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/AppDeployPreHook] : Completed activity. Result:
+  Successfully execute hooks in directory /opt/elasticbeanstalk/hooks/appdeploy/pre.
+[2018-03-21T23:09:54.798Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/EbExtensionPostBuild] : Starting activity...
+[2018-03-21T23:09:55.444Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/EbExtensionPostBuild/Infra-EmbeddedPostBuild] : Starting a ctivity...
+[2018-03-21T23:09:55.444Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/EbExtensionPostBuild/Infra-EmbeddedPostBuild] : Completed  activity.
+[2018-03-21T23:09:55.459Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/EbExtensionPostBuild] : Completed activity.
+[2018-03-21T23:09:55.459Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/InfraCleanEbExtension] : Starting activity...
+[2018-03-21T23:09:55.460Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0/InfraCleanEbExtension] : Completed activity. Result:
+  Cleaned ebextensions subdirectories from /opt/python/ondeck/app.
+[2018-03-21T23:09:55.460Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage0] : Completed activity. Result:
+  Application deployment - Command CMD-Startup stage 0 completed
+[2018-03-21T23:09:55.460Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1] : Starting activity...
+[2018-03-21T23:09:55.460Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook] : Starting activity...
+[2018-03-21T23:09:55.460Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook/01flip.py] : Starting activity...
+[2018-03-21T23:10:00.157Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook/01flip.py] : Completed activity. Result :
+  httpd: stopped
+  httpd: started
+  httpd                            RUNNING   pid 3345, uptime 0:00:02
+[2018-03-21T23:10:00.157Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook/01stop_xray.sh] : Starting activity...
+[2018-03-21T23:10:02.272Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook/01stop_xray.sh] : Completed activity. R esult:
+  Executing: if ( initctl status xray | grep start ); then initctl stop xray; fi
+  xray start/running, process 2278
+  xray stop/waiting
+[2018-03-21T23:10:02.273Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook/02create_pids_for_monitoring.sh] : Star ting activity...
+[2018-03-21T23:10:02.458Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook/02create_pids_for_monitoring.sh] : Comp leted activity. Result:
+  + chmod 0755 /var/run/httpd
+  + /opt/elasticbeanstalk/bin/healthd-track-pidfile --proxy httpd
+  + /opt/elasticbeanstalk/bin/healthd-track-pidfile --name application --location /opt/python/run/supervisord.pid
+[2018-03-21T23:10:02.458Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook/02start_xray.sh] : Starting activity...
+[2018-03-21T23:10:02.562Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook/02start_xray.sh] : Completed activity.
+[2018-03-21T23:10:02.562Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployEnactHook] : Completed activity. Result:
+  Successfully execute hooks in directory /opt/elasticbeanstalk/hooks/appdeploy/enact.
+[2018-03-21T23:10:02.562Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployPostHook] : Starting activity...
+:[K[K[2018-03-21T23:10:02.562Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/AppDeployPostHook] : Completed activity. Result:
+  Successfully execute hooks in directory /opt/elasticbeanstalk/hooks/appdeploy/post.
+[2018-03-21T23:10:02.562Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/PostInitHook] : Starting activity...
+[2018-03-21T23:10:02.562Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/PostInitHook/01processmgrstart.sh] : Starting activity...
+[2018-03-21T23:10:02.567Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/PostInitHook/01processmgrstart.sh] : Completed activity. R esult:
+  + pgrep supervisord
+  3030
+[2018-03-21T23:10:02.567Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1/PostInitHook] : Completed activity. Result:
+  Successfully execute hooks in directory /opt/elasticbeanstalk/hooks/postinit.
+[2018-03-21T23:10:02.567Z] INFO  [3168]  - [Application deployment app-180321_180230@1/StartupStage1] : Completed activity. Result:
+  Application deployment - Command CMD-Startup stage 1 completed
+[2018-03-21T23:10:02.568Z] INFO  [3168]  - [Application deployment app-180321_180230@1/AddonsAfter] : Starting activity...
+[2018-03-21T23:10:02.568Z] INFO  [3168]  - [Application deployment app-180321_180230@1/AddonsAfter/ConfigLogRotation] : Starting activity...
+[2018-03-21T23:10:02.568Z] INFO  [3168]  - [Application deployment app-180321_180230@1/AddonsAfter/ConfigLogRotation/10-config.sh] : Starting activity...
+[2018-03-21T23:10:02.644Z] INFO  [3168]  - [Application deployment app-180321_180230@1/AddonsAfter/ConfigLogRotation/10-config.sh] : Completed activity. Result :
+  Disabled forced hourly log rotation.
+[2018-03-21T23:10:02.644Z] INFO  [3168]  - [Application deployment app-180321_180230@1/AddonsAfter/ConfigLogRotation] : Completed activity. Result:
+  Successfully execute hooks in directory /opt/elasticbeanstalk/addons/logpublish/hooks/config.
+[2018-03-21T23:10:02.644Z] INFO  [3168]  - [Application deployment app-180321_180230@1/AddonsAfter] : Completed activity.
+[2018-03-21T23:10:02.644Z] INFO  [3168]  - [Application deployment app-180321_180230@1] : Completed activity. Result:
+  Application deployment - Command CMD-Startup succeeded
+[2018-03-21T23:12:26.914Z] INFO  [3568]  - [CMD-TailLogs] : Starting activity...
+[2018-03-21T23:12:26.914Z] INFO  [3568]  - [CMD-TailLogs/AddonsBefore] : Starting activity...
+[2018-03-21T23:12:26.914Z] INFO  [3568]  - [CMD-TailLogs/AddonsBefore] : Completed activity.
+[2018-03-21T23:12:26.914Z] INFO  [3568]  - [CMD-TailLogs/TailLogs] : Starting activity...
+[2018-03-21T23:12:26.914Z] INFO  [3568]  - [CMD-TailLogs/TailLogs/TailLogs] : Starting activity...
+
+
+
+-------------------------------------
+/var/log/eb-commandprocessor.log
+-------------------------------------
+[2018-03-21T23:09:08.842Z] DEBUG [2844]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||ManifestFileS3Key..
+[2018-03-21T23:09:09.084Z] INFO  [2844]  : Finding latest manifest from bucket 'elasticbeanstalk-us-west-2-882729463303' with prefix 'resources/environments/e- phsw4aepr3/_runtime/versions/manifest_'.
+[2018-03-21T23:09:09.355Z] INFO  [2844]  : Found manifest with key 'resources/environments/e-phsw4aepr3/_runtime/versions/manifest_1521673366834'.
+[2018-03-21T23:09:09.386Z] INFO  [2844]  : Updated manifest cache: deployment ID 1 and serial 1.
+[2018-03-21T23:09:09.386Z] DEBUG [2844]  : Loaded definition of Command CMD-PreInit.
+[2018-03-21T23:09:09.386Z] INFO  [2844]  : Executing Initialization
+[2018-03-21T23:09:09.386Z] INFO  [2844]  : Executing command: CMD-PreInit...
+:[K[K[2018-03-21T23:09:09.386Z] INFO  [2844]  : Executing command CMD-PreInit activities...
+[2018-03-21T23:09:09.386Z] DEBUG [2844]  : Setting environment variables..
+[2018-03-21T23:09:09.386Z] INFO  [2844]  : Running AddonsBefore for command CMD-PreInit...
+[2018-03-21T23:09:11.968Z] DEBUG [2844]  : Running stages of Command CMD-PreInit from stage 0 to stage 0...
+[2018-03-21T23:09:11.968Z] INFO  [2844]  : Running stage 0 of command CMD-PreInit...
+[2018-03-21T23:09:11.969Z] DEBUG [2844]  : Loaded 2 actions for stage 0.
+[2018-03-21T23:09:11.969Z] INFO  [2844]  : Running 1 of 2 actions: DownloadSourceBundle...
+[2018-03-21T23:09:12.289Z] INFO  [2844]  : Running 2 of 2 actions: PreInitHook...
+[2018-03-21T23:09:18.483Z] INFO  [2844]  : Running AddonsAfter for command CMD-PreInit...
+[2018-03-21T23:09:18.483Z] INFO  [2844]  : Command CMD-PreInit succeeded!
+[2018-03-21T23:09:18.483Z] INFO  [2844]  : Command processor returning results: 
+{"status":"SUCCESS","api_version":"1.0","results":[{"status":"SUCCESS","msg":"","returncode":0,"events":[]}]}
+[2018-03-21T23:09:47.270Z] DEBUG [3168]  : Reading config file: /etc/elasticbeanstalk/.aws-eb-stack.properties
+[2018-03-21T23:09:47.270Z] DEBUG [3168]  : Checking if the command processor should execute...
+[2018-03-21T23:09:47.272Z] DEBUG [3168]  : Checking whether the command is applicable to instance (i-0f7ae48437324c1b2)..
+[2018-03-21T23:09:47.272Z] INFO  [3168]  : Command is applicable to this instance (i-0f7ae48437324c1b2)..
+[2018-03-21T23:09:47.272Z] DEBUG [3168]  : Checking if the received command stage is valid..
+[2018-03-21T23:09:47.272Z] INFO  [3168]  : No stage_num in command. Valid stage..
+[2018-03-21T23:09:47.272Z] INFO  [3168]  : Received command CMD-Startup: {"execution_data":"{\"leader_election\":\"true\"}","instance_ids":["i-0f7ae48437324c1b 2"],"command_name":"CMD-Startup","api_version":"1.0","resource_name":"AWSEBAutoScalingGroup","request_id":"6844e9e9-387f-41ff-a6d9-c462f36c19de"}
+[2018-03-21T23:09:47.272Z] INFO  [3168]  : Command processor should execute command.
+[2018-03-21T23:09:47.272Z] DEBUG [3168]  : Storing current stage..
+[2018-03-21T23:09:47.272Z] DEBUG [3168]  : Stage_num does not exist. Not saving null stage. Returning..
+[2018-03-21T23:09:47.272Z] DEBUG [3168]  : Reading config file: /etc/elasticbeanstalk/.aws-eb-stack.properties
+[2018-03-21T23:09:47.272Z] DEBUG [3168]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||_ContainerConfigFileContent||commands..
+[2018-03-21T23:09:47.273Z] DEBUG [3168]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||_API||_Commands..
+[2018-03-21T23:09:47.273Z] INFO  [3168]  : Found enabled addons: ["logstreaming", "logpublish"].
+[2018-03-21T23:09:47.274Z] INFO  [3168]  : Updating Command definition of addon logstreaming.
+[2018-03-21T23:09:47.274Z] INFO  [3168]  : Updating Command definition of addon logpublish.
+[2018-03-21T23:09:47.274Z] DEBUG [3168]  : Refreshing metadata...
+[2018-03-21T23:09:47.661Z] DEBUG [3168]  : Refreshed environment metadata.
+[2018-03-21T23:09:47.662Z] INFO  [3168]  : Recreated directory /opt/elasticbeanstalk/deploy/configuration/.
+[2018-03-21T23:09:47.662Z] DEBUG [3168]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||_AppSourceUrlFileContent||url..
+[2018-03-21T23:09:47.662Z] INFO  [3168]  : Created appsource url file at /opt/elasticbeanstalk/deploy/configuration/appsourceurl.
+[2018-03-21T23:09:47.662Z] DEBUG [3168]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||_ContainerConfigFileContent..
+[2018-03-21T23:09:47.664Z] INFO  [3168]  : Created container config file at /opt/elasticbeanstalk/deploy/configuration/containerconfiguration.
+[2018-03-21T23:09:47.664Z] DEBUG [3168]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||_ContainerConfigFileContent||commands..
+[2018-03-21T23:09:47.664Z] DEBUG [3168]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||_API||_Commands..
+[2018-03-21T23:09:47.665Z] INFO  [3168]  : Found enabled addons: ["logstreaming", "logpublish"].
+[2018-03-21T23:09:47.666Z] INFO  [3168]  : Updating Command definition of addon logstreaming.
+[2018-03-21T23:09:47.666Z] INFO  [3168]  : Updating Command definition of addon logpublish.
+[2018-03-21T23:09:47.666Z] DEBUG [3168]  : Loaded definition of Command CMD-Startup.
+:[K[K[2018-03-21T23:09:47.666Z] INFO  [3168]  : Executing Application deployment
+[2018-03-21T23:09:47.667Z] INFO  [3168]  : Executing command: CMD-Startup...
+[2018-03-21T23:09:47.667Z] INFO  [3168]  : Executing command CMD-Startup activities...
+[2018-03-21T23:09:47.667Z] DEBUG [3168]  : Setting environment variables..
+[2018-03-21T23:09:47.667Z] INFO  [3168]  : Running AddonsBefore for command CMD-Startup...
+[2018-03-21T23:09:47.784Z] DEBUG [3168]  : Running stages of Command CMD-Startup from stage 0 to stage 1...
+[2018-03-21T23:09:47.784Z] INFO  [3168]  : Running stage 0 of command CMD-Startup...
+[2018-03-21T23:09:47.784Z] INFO  [3168]  : Running leader election...
+[2018-03-21T23:09:48.171Z] INFO  [3168]  : Instance is Leader.
+[2018-03-21T23:09:48.171Z] DEBUG [3168]  : Loaded 7 actions for stage 0.
+[2018-03-21T23:09:48.171Z] INFO  [3168]  : Running 1 of 7 actions: HealthdLogRotation...
+[2018-03-21T23:09:48.177Z] INFO  [3168]  : Running 2 of 7 actions: HealthdHTTPDLogging...
+[2018-03-21T23:09:48.177Z] INFO  [3168]  : Running 3 of 7 actions: HealthdNginxLogging...
+[2018-03-21T23:09:48.177Z] INFO  [3168]  : Running 4 of 7 actions: EbExtensionPreBuild...
+[2018-03-21T23:09:48.634Z] INFO  [3168]  : Running 5 of 7 actions: AppDeployPreHook...
+[2018-03-21T23:09:54.798Z] INFO  [3168]  : Running 6 of 7 actions: EbExtensionPostBuild...
+[2018-03-21T23:09:55.459Z] INFO  [3168]  : Running 7 of 7 actions: InfraCleanEbExtension...
+[2018-03-21T23:09:55.460Z] INFO  [3168]  : Running stage 1 of command CMD-Startup...
+[2018-03-21T23:09:55.460Z] DEBUG [3168]  : Loaded 3 actions for stage 1.
+[2018-03-21T23:09:55.460Z] INFO  [3168]  : Running 1 of 3 actions: AppDeployEnactHook...
+[2018-03-21T23:10:02.562Z] INFO  [3168]  : Running 2 of 3 actions: AppDeployPostHook...
+[2018-03-21T23:10:02.562Z] INFO  [3168]  : Running 3 of 3 actions: PostInitHook...
+[2018-03-21T23:10:02.567Z] INFO  [3168]  : Running AddonsAfter for command CMD-Startup...
+[2018-03-21T23:10:02.644Z] INFO  [3168]  : Command CMD-Startup succeeded!
+[2018-03-21T23:10:02.645Z] INFO  [3168]  : Command processor returning results: 
+{"status":"SUCCESS","api_version":"1.0","results":[{"status":"SUCCESS","msg":"","returncode":0,"events":[]}]}
+[2018-03-21T23:12:26.908Z] DEBUG [3568]  : Reading config file: /etc/elasticbeanstalk/.aws-eb-stack.properties
+[2018-03-21T23:12:26.908Z] DEBUG [3568]  : Checking if the command processor should execute...
+[2018-03-21T23:12:26.911Z] DEBUG [3568]  : Checking whether the command is applicable to instance (i-0f7ae48437324c1b2)..
+[2018-03-21T23:12:26.911Z] INFO  [3568]  : Command is applicable to this instance (i-0f7ae48437324c1b2)..
+[2018-03-21T23:12:26.911Z] DEBUG [3568]  : Checking if the received command stage is valid..
+[2018-03-21T23:12:26.911Z] INFO  [3568]  : No stage_num in command. Valid stage..
+[2018-03-21T23:12:26.911Z] INFO  [3568]  : Received command CMD-TailLogs: {"execution_data":"{\"aws_access_key_id\":\"ASIAJYRXYJBOBKQBZIFQ\",\"signature\":\"\\ \/12VawXuAwe+j6E4K\\\/o4RSqRpuM=\",\"security_token\":\"FQoDYXdzEPj\\\/\\\/\\\/\\\/\\\/\\\/\\\/\\\/\\\/\\\/wEaDCB2fatXLLm8laKh6SKpA+\\\/oQPx69DfphBLdD9SOQfQro\ \\/YxN2cjqE3cfxU\\\/BIiX4VZJPCZo76+9nHSYeZeC0A3dqnQ9PTRifPQo4Ju7DwTR8tUlWLvsXSob1MSMBIxwpbzreyL4zrUwNwty9PPYsEyIWsc2rCt+yD1ACf4E6CJwyb2SdZ4FnsetJb5fdSqSm0CeTcY 8fBLxUrNurP5gnip9swLtWrai7nub+3xEecfrzz1Yt7ExcMnDtbHmX1+tq0qRzbl18CVSndcNf+CB\\\/k4kedHtkkCm8APMvetV3jDB7+G\\\/ep7oM+rZxTMONMKt65ZJGX2com8r8cZ4cpDhgRs0rlfseG4W 7u2mMkPcDdhwQ0eOaEoAtQhn52Cu9hGsi56EkoHrIeZgfelqznlzQy8sJrZi2NkvZRnRP59HpEvNMekGy4ilQA0nfPWOiKBn0G4uU0FFvJckA+e\\\/mVWIshP+6RzDqwSFfa8a6HRom\\\/lyRkZ9Sryi+ClV9 4UJhUpW5v2bk7ezFBMe+l\\\/vUDUrLB8AiRhdbeAg7NeSNrhj7mZn7rEp1sjpIZppVhG8fqWa+L\\\/hNwzX2hKiKPfLy9UF|NzAuMTE1LjEzMC40OA==\",\"policy\":\"eyJleHBpcmF0aW9uIjoiMjAxO C0wMy0yMVQyMzo0MjoyNS4yODBaIiwiY29uZGl0aW9ucyI6W1sic3RhcnRzLXdpdGgiLCIkeC1hbXotbWV0YS10aW1lX3N0YW1wIiwiIl0sWyJzdGFydHMtd2l0aCIsIiR4LWFtei1tZXRhLXB1Ymxpc2hfbWVj aGFuaXNtIiwiIl0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCJyZXNvdXJjZXNcL2Vudmlyb25tZW50c1wvbG9nc1wvIl0sWyJzdGFydHMtd2l0aCIsIiR4LWFtei1tZXRhLWJhdGNoX2lkIiwiIl0sWyJzdGFydHM td2l0aCIsIiR4LWFtei1tZXRhLWZpbGVfbmFtZSIsIiJdLFsic3RhcnRzLXdpdGgiLCIkeC1hbXotc2VjdXJpdHktdG9rZW4iLCIiXSxbInN0YXJ0cy13aXRoIiwiJENvbnRlbnQtVHlwZSIsIiJdLFsiZXEiLC IkYnVja2V0IiwiZWxhc3RpY2JlYW5zdGFsay11cy13ZXN0LTItODgyNzI5NDYzMzAzIl0sWyJlcSIsIiRhY2wiLCJwcml2YXRlIl1dfQ==\"}","instance_ids":["i-0f7ae48437324c1b2"],"data":"8 :[K[K760ca0e-836a-42bc-a9b6-e121d083b25a","command_name":"CMD-TailLogs","api_version":"1.0","resource_name":"AWSEBAutoScalingGroup","request_id":"8760ca0e-836a-42bc -a9b6-e121d083b25a"}
+[2018-03-21T23:12:26.911Z] INFO  [3568]  : Command processor should execute command.
+[2018-03-21T23:12:26.911Z] DEBUG [3568]  : Storing current stage..
+[2018-03-21T23:12:26.911Z] DEBUG [3568]  : Stage_num does not exist. Not saving null stage. Returning..
+[2018-03-21T23:12:26.911Z] DEBUG [3568]  : Reading config file: /etc/elasticbeanstalk/.aws-eb-stack.properties
+[2018-03-21T23:12:26.911Z] DEBUG [3568]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||_ContainerConfigFileContent||commands..
+[2018-03-21T23:12:26.912Z] DEBUG [3568]  : Retrieving metadata for key: AWS::ElasticBeanstalk::Ext||_API||_Commands..
+[2018-03-21T23:12:26.912Z] INFO  [3568]  : Found enabled addons: ["logstreaming", "logpublish"].
+[2018-03-21T23:12:26.913Z] INFO  [3568]  : Updating Command definition of addon logstreaming.
+[2018-03-21T23:12:26.913Z] INFO  [3568]  : Updating Command definition of addon logpublish.
+[2018-03-21T23:12:26.914Z] DEBUG [3568]  : Loaded definition of Command CMD-TailLogs.
+[2018-03-21T23:12:26.914Z] INFO  [3568]  : Executing CMD-TailLogs
+[2018-03-21T23:12:26.914Z] INFO  [3568]  : Executing command: CMD-TailLogs...
+[2018-03-21T23:12:26.914Z] INFO  [3568]  : Executing command CMD-TailLogs activities...
+[2018-03-21T23:12:26.914Z] DEBUG [3568]  : Setting environment variables..
+[2018-03-21T23:12:26.914Z] INFO  [3568]  : Running AddonsBefore for command CMD-TailLogs...
+[2018-03-21T23:12:26.914Z] DEBUG [3568]  : Running stages of Command CMD-TailLogs from stage 0 to stage 0...
+[2018-03-21T23:12:26.914Z] INFO  [3568]  : Running stage 0 of command CMD-TailLogs...
+[2018-03-21T23:12:26.914Z] DEBUG [3568]  : Loaded 1 actions for stage 0.
+[2018-03-21T23:12:26.914Z] INFO  [3568]  : Running 1 of 1 actions: TailLogs...
+
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ eb local run
+ERROR: You can use "eb local" only with preconfigured, generic and multicontainer Docker platforms.
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ eb status
+Environment details for: greetings2-env
+  Application name: greetings2
+  Region: us-west-2
+  Deployed Version: app-180321_180230
+  Environment ID: e-phsw4aepr3
+  Platform: 64bit Amazon Linux 2017.09 v2.6.5 running Python 2.7
+  Tier: WebServer-Standard-1.0
+  CNAME: greetings2-env.2mbcsk8i3g.us-west-2.elasticbeanstalk.com
+  Updated: 2018-03-21 23:12:32.237000+00:00
+  Status: Ready
+  Health: Green
+Alert: An update to the EB CLI is available. Run "pip install --upgrade awsebcli" to get the latest version.
+
+
+devdatta@devdatta-ThinkPad-T430:~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ eb terminate
+The environment "greetings2-env" and all associated instances will be terminated.
+To confirm, type the environment name: greetigs[K[Kngs2-env
+INFO: terminateEnvironment is starting.
+ -- Events -- (safe to Ctrl+C)INFO: Deleted CloudWatch alarm named: awseb-e-phsw4aepr3-stack-AWSEBCloudwatchAlarmLow-1P86W9A23IXHH 
+ -- Events -- (safe to Ctrl+C)INFO: Deleted CloudWatch alarm named: awseb-e-phsw4aepr3-stack-AWSEBCloudwatchAlarmHigh-1K9QJDOFRU6KS 
+ -- Events -- (safe to Ctrl+C)INFO: Deleted Auto Scaling group policy named: arn:aws:autoscaling:us-west-2:882729463303:scalingPolicy:332f8a77-6e6b-4ca1-880b-e57b872ef02b:autoScalingGroupName/awseb-e-phsw4aepr3-stack-AWSEBAutoScalingGroup-1JONDOWL3CJMJ:policyName/awseb-e-phsw4aepr3-stack-AWSEBAutoScalingScaleDownPolicy-WOTYFQ3Z2EFB
+ -- Events -- (safe to Ctrl+C)INFO: Deleted Auto Scaling group policy named: arn:aws:autoscaling:us-west-2:882729463303:scalingPolicy:708d61ad-f858-4e86-a3a4-356f5da8f49f:autoScalingGroupName/awseb-e-phsw4aepr3-stack-AWSEBAutoScalingGroup-1JONDOWL3CJMJ:policyName/awseb-e-phsw4aepr3-stack-AWSEBAutoScalingScaleUpPolicy-1FMDLD7I3K321
+ -- Events -- (safe to Ctrl+C)INFO: Waiting for EC2 instances to terminate. This may take a few minutes.
+ -- Events -- (safe to Ctrl+C)INFO: Removed instance [i-0f7ae48437324c1b2] from your environment.
+ -- Events -- (safe to Ctrl+C)INFO: Deleted Auto Scaling group named: awseb-e-phsw4aepr3-stack-AWSEBAutoScalingGroup-1JONDOWL3CJMJ
+ -- Events -- (safe to Ctrl+C)INFO: Deleted load balancer named: awseb-e-p-AWSEBLoa-I8SEHO1SKUOS
+ -- Events -- (safe to Ctrl+C)INFO: Deleted Auto Scaling launch configuration named: awseb-e-phsw4aepr3-stack-AWSEBAutoScalingLaunchConfiguration-1EAEQVKM3EJ0T
+ -- Events -- (safe to Ctrl+C)INFO: Environment health has transitioned from Ok to Pending. Terminate in progress (running for 3 minutes). There are no instances. Auto Scaling group desired capacity is set to 0.
+ -- Events -- (safe to Ctrl+C)WARN: Environment health has transitioned from Pending to Severe. Terminate in progress (running for 4 minutes). There are no instances. Auto Scaling group desired capacity is set to 0. Auto Scaling group (awseb-e-phsw4aepr3-stack-AWSEBAutoScalingGroup-1JONDOWL3CJMJ) and Elastic Load Balancer (awseb-e-p-AWSEBLoa-I8SEHO1SKUOS) have been deleted.
+ -- Events -- (safe to Ctrl+C)                                
+ERROR: Timed out while waiting for command to Complete. The timeout can be set using the --timeout option.
+
+

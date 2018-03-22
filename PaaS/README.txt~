@@ -1,0 +1,19 @@
+AWS-Beanstalk
+--------------
+This directory contains Python based sample web application.
+Use this application as a starting point for your code.
+
+Follow the README inside this directory to deploy this application
+on AWS Elastic Beanstalk
+
+
+FirstMile
+----------
+This directory contains steps to install and use FirstMile developer sandbox
+(https://github.com/cloud-ark/firstmile).
+
+You can use FirstMile when you are developing your web application locally.
+FirstMile also supports deployment to Elastic Beanstalk once you are ready.
+
+
+

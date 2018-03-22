@@ -1,0 +1,38 @@
+<html>
+<head>
+<style>
+.bodycenter {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}
+
+.footer{
+    text-align: center;
+    border: 1px solid #73AD21;
+}
+</style>
+</head>
+<body>
+  <div class="bodycenter">
+ 
+    <form action="add_to_db" method="post">
+      <p>Sample Web Application that uses a managed relational database service such as Google CloudSQL or Amazon RDS.</p>
+      <br>
+      Input a greeting: <input type="text" name="message"><br>
+      <input type="submit" value="Add greeting to database">
+    </form>
+
+    <p>Greetings stored in database</p>
+    <br>
+    {% for entry in entries %}
+        <div>
+            <div>{{ entry.greeting }}</div>
+        </div>
+    {% endfor %}
+    
+    <div class="footer">
+    </div>
+  </div>
+</body>
+</html>
