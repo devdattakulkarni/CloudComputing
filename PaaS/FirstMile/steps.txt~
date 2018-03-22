@@ -1,0 +1,200 @@
+ubuntu@ip-172-31-36-71:~$ git clone https://github.com/cloud-ark/firstmile.git
+Cloning into 'firstmile'...
+remote: Counting objects: 2235, done.
+remote: Compressing objects: 100% (596/596), done.
+remote: Total 2235 (delta 1639), reused 2213 (delta 1626), pack-reused 0
+Receiving objects: 100% (2235/2235), 321.38 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (1639/1639), done.
+Checking connectivity... done.
+ubuntu@ip-172-31-36-71:~$ cd firstmile/
+ubuntu@ip-172-31-36-71:~/firstmile$ ./install.sh 
+Host OS: Ubuntu
+Installing FirstMile. Installation logs stored in install.log
+Installing Docker
+Installing FirstMile client
+~/firstmile/firstmile/bin ~/firstmile
+~/firstmile
+Starting FirstMile
+FirstMile successfully installed.
+Next steps:
+- Quick test: Run 'cld app list'
+- Try sample programs from examples directory
+ubuntu@ip-172-31-36-71:~/firstmile$ cld app list
++-----------+----------+-------------+-------+--------+
+| Deploy ID | App Name | App Version | Cloud | Status |
++-----------+----------+-------------+-------+--------+
++-----------+----------+-------------+-------+--------+
+ubuntu@ip-172-31-36-71:~/firstmile$ ls
+cld.py  common                  Dockerfile   examples   functionaltests  install.log  lib      manager    README.txt        run-tests.sh
+client  deployment-details.txt  Dockerfiles  firstmile  __init__.py      install.sh   LICENSE  packaging  requirements.txt  tools
+ubuntu@ip-172-31-36-71:~/firstmile$ cd examples/
+ubuntu@ip-172-31-36-71:~/firstmile/examples$ ls
+express-checkout  greetings-python  hello-world  README.txt  sample-yaml-files
+ubuntu@ip-172-31-36-71:~/firstmile/examples$ cd hello-world/
+ubuntu@ip-172-31-36-71:~/firstmile/examples/hello-world$ more README.txt 
+ubuntu@ip-172-31-20-239:~/firstmile/examples/hello-world$ cld app deploy --cloud local-docker
+Enter application's main file (default: application.py)>
+Enter port number on which application listens (default: 5000>)
+ubuntu@ip-172-31-36-71:~/firstmile/examples/hello-world$ cld app deploy --cloud local-docker
+Enter application's main file (default: application.py)>
+Enter port number on which application listens (default: 5000>)
++-------------+-----------+--------------+
+|   App Name  | Deploy ID |    Cloud     |
++-------------+-----------+--------------+
+| hello-world |     1     | local-docker |
++-------------+-----------+--------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/hello-world$ cld app list
++-----------+-------------+---------------------+--------------+--------+
+| Deploy ID |   App Name  |     App Version     |    Cloud     | Status |
++-----------+-------------+---------------------+--------------+--------+
+|     1     | hello-world | 2018-03-21-21-47-24 | local-docker |        |
++-----------+-------------+---------------------+--------------+--------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/hello-world$ cld app list
++-----------+-------------+---------------------+--------------+--------------+
+| Deploy ID |   App Name  |     App Version     |    Cloud     |    Status    |
++-----------+-------------+---------------------+--------------+--------------+
+|     1     | hello-world | 2018-03-21-21-47-24 | local-docker | BUILDING_APP |
++-----------+-------------+---------------------+--------------+--------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/hello-world$ cld app list
++-----------+-------------+---------------------+--------------+--------------+
+| Deploy ID |   App Name  |     App Version     |    Cloud     |    Status    |
++-----------+-------------+---------------------+--------------+--------------+
+|     1     | hello-world | 2018-03-21-21-47-24 | local-docker | BUILDING_APP |
++-----------+-------------+---------------------+--------------+--------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/hello-world$ cld app list
++-----------+-------------+---------------------+--------------+--------------+
+| Deploy ID |   App Name  |     App Version     |    Cloud     |    Status    |
++-----------+-------------+---------------------+--------------+--------------+
+|     1     | hello-world | 2018-03-21-21-47-24 | local-docker | BUILDING_APP |
++-----------+-------------+---------------------+--------------+--------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/hello-world$ cd ..
+ubuntu@ip-172-31-36-71:~/firstmile/examples$ cd greetings-python/
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ ls
+application.py  README.txt  requirements.txt  templates
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ more README.txt 
+ubuntu@ip-172-31-20-239:~/firstmile/examples/greetings-python$ cld app deploy --cloud local-docker --service mysql
+Enter application's main file (default: application.py)>
+Enter port number on which application listens (default: 5000>)
+Enter name of variable in your app used to reference the database>DB
+Enter name of variable in your app used to reference the db server/host>HOST
+Enter name of variable in your app used to reference the db user>USER
+Enter name of variable in your app used to reference the db password>PASSWORD
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app deploy --cloud local-docker --service mysql
+Enter application's main file (default: application.py)>
+Enter port number on which application listens (default: 5000>)
+Enter name of variable in your app used to reference the database>DB
+Enter name of variable in your app used to reference the db server/host>HOST
+Enter name of variable in your app used to reference the db user>USER
+Enter name of variable in your app used to reference the db password>PASSWORD
++------------------+-----------+--------------+
+|     App Name     | Deploy ID |    Cloud     |
++------------------+-----------+--------------+
+| greetings-python |     2     | local-docker |
++------------------+-----------+--------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app list
++-----------+------------------+---------------------+--------------+--------------+
+| Deploy ID |     App Name     |     App Version     |    Cloud     |    Status    |
++-----------+------------------+---------------------+--------------+--------------+
+|     1     |   hello-world    | 2018-03-21-21-47-24 | local-docker | BUILDING_APP |
+|     2     | greetings-python | 2018-03-21-21-48-17 | local-docker |              |
++-----------+------------------+---------------------+--------------+--------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld service list
++-----------+------------------------+---------------------+--------------+----------------------------+
+| Deploy ID |      Service Name      |   Service Version   |    Cloud     |           Status           |
++-----------+------------------------+---------------------+--------------+----------------------------+
+|     1     | mysql-greetings-python | 2018-03-21-21-48-17 | local-docker | DEPLOYING_SERVICE_INSTANCE |
++-----------+------------------------+---------------------+--------------+----------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld service list
++-----------+------------------------+---------------------+--------------+----------------------------+
+| Deploy ID |      Service Name      |   Service Version   |    Cloud     |           Status           |
++-----------+------------------------+---------------------+--------------+----------------------------+
+|     1     | mysql-greetings-python | 2018-03-21-21-48-17 | local-docker | DEPLOYING_SERVICE_INSTANCE |
++-----------+------------------------+---------------------+--------------+----------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ watch -n 5 cld app list
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app show --deploy-id 1
++-------------+---------------------+--------------+-------------------------+----------------------------------+
+|   App Name  |     App Version     |    Cloud     |          Status         |             App Info             |
++-------------+---------------------+--------------+-------------------------+----------------------------------+
+| hello-world | 2018-03-21-21-47-24 | local-docker | APP_DEPLOYMENT_COMPLETE | APP URL:  http://localhost:32768 |
+|             |                     |              |                         |                                  |
++-------------+---------------------+--------------+-------------------------+----------------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ curl http://localhost:32768
+Hello World!ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ 
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app show --deploy-id 2
++------------------+---------------------+--------------+-------------------------+----------------------------------+
+|     App Name     |     App Version     |    Cloud     |          Status         |             App Info             |
++------------------+---------------------+--------------+-------------------------+----------------------------------+
+| greetings-python | 2018-03-21-21-48-17 | local-docker | APP_DEPLOYMENT_COMPLETE | APP URL:  http://localhost:32769 |
+|                  |                     |              |                         |         DB_NAME: testdb          |
+|                  |                     |              |                         |          USER: testuser          |
+|                  |                     |              |                         |     PASSWORD: testpass123!#$     |
+|                  |                     |              |                         |    MySQL instance: 172.17.0.4    |
+|                  |                     |              |                         |                                  |
++------------------+---------------------+--------------+-------------------------+----------------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ curl http://localhost:32769
+<html>
+<head>
+<style>
+.bodycenter {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}
+
+.footer{
+    text-align: center;
+    border: 1px solid #73AD21;
+}
+</style>
+</head>
+<body>
+  <div class="bodycenter">
+ 
+    <form action="add_to_db" method="post">
+      Message: <input type="text" name="message"><br>
+      <input type="submit" value="Submit">
+    </form>
+
+    
+        <div>
+            <div>Hello, World!</div>
+        </div>
+    
+    
+    <div class="footer">
+    </div>
+  </div>
+</body>
+</html>ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld service list
++-----------+------------------------+---------------------+--------------+-----------------------------+
+| Deploy ID |      Service Name      |   Service Version   |    Cloud     |            Status           |
++-----------+------------------------+---------------------+--------------+-----------------------------+
+|     1     | mysql-greetings-python | 2018-03-21-21-48-17 | local-docker | SERVICE_DEPLOYMENT_COMPLETE |
++-----------+------------------------+---------------------+--------------+-----------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app list
++-----------+------------------+---------------------+--------------+-------------------------+
+| Deploy ID |     App Name     |     App Version     |    Cloud     |          Status         |
++-----------+------------------+---------------------+--------------+-------------------------+
+|     1     |   hello-world    | 2018-03-21-21-47-24 | local-docker | APP_DEPLOYMENT_COMPLETE |
+|     2     | greetings-python | 2018-03-21-21-48-17 | local-docker | APP_DEPLOYMENT_COMPLETE |
++-----------+------------------+---------------------+--------------+-------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app logs --deploy-id 1
++-------------+---------------------+--------------+----------------------------------------------------------------------------------------------------+
+|   App Name  |     App Version     |    Cloud     |                                            Log location                                            |
++-------------+---------------------+--------------+----------------------------------------------------------------------------------------------------+
+| hello-world | 2018-03-21-21-47-24 | local-docker | /home/ubuntu/.cld/data/deployments/hello-world/2018-03-21-21-47-24/2018-03-21-21-47-24.runtime-log |
++-------------+---------------------+--------------+----------------------------------------------------------------------------------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app logs --deploy-id 2
++------------------+---------------------+--------------+---------------------------------------------------------------------------------------------------------+
+|     App Name     |     App Version     |    Cloud     |                                               Log location                                              |
++------------------+---------------------+--------------+---------------------------------------------------------------------------------------------------------+
+| greetings-python | 2018-03-21-21-48-17 | local-docker | /home/ubuntu/.cld/data/deployments/greetings-python/2018-03-21-21-48-17/2018-03-21-21-48-17.runtime-log |
++------------------+---------------------+--------------+---------------------------------------------------------------------------------------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app list
++-----------+------------------+---------------------+--------------+-------------------------+
+| Deploy ID |     App Name     |     App Version     |    Cloud     |          Status         |
++-----------+------------------+---------------------+--------------+-------------------------+
+|     1     |   hello-world    | 2018-03-21-21-47-24 | local-docker | APP_DEPLOYMENT_COMPLETE |
+|     2     | greetings-python | 2018-03-21-21-48-17 | local-docker | APP_DEPLOYMENT_COMPLETE |
++-----------+------------------+---------------------+--------------+-------------------------+
+ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ 
