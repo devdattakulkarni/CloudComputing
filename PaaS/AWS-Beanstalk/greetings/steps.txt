@@ -1,3 +1,5 @@
+devdatta@devdatta-ThinkPad-T430: ~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ pip install awsebcli --upgrade
+
 devdatta@devdatta-ThinkPad-T430: ~/CloudComputing/PaaS/AWS-Beanstalk/greetings$ eb init
 
 Select a default region
