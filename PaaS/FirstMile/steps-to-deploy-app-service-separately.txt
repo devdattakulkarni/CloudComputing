@@ -1,0 +1,279 @@
+FirstMile example usage:
+========================
+
+ubuntu@ip-172-31-37-238:~$ git clone https://github.com/cloud-ark/firstmile.git
+Cloning into 'firstmile'...
+remote: Counting objects: 2265, done.
+remote: Compressing objects: 100% (614/614), done.
+remote: Total 2265 (delta 1661), reused 2230 (delta 1638), pack-reused 0
+Receiving objects: 100% (2265/2265), 325.71 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (1661/1661), done.
+Checking connectivity... done.
+ubuntu@ip-172-31-37-238:~$ cd firstmile/
+ubuntu@ip-172-31-37-238:~/firstmile$ ./install.sh 
+Host OS: Ubuntu
+Installing FirstMile. Installation logs stored in install.log
+Installing Docker
+Installing FirstMile client
+~/firstmile/firstmile/bin ~/firstmile
+~/firstmile
+Starting FirstMile
+FirstMile successfully installed.
+Next steps:
+- Quick test: Run 'cld app list'
+- Try sample programs from examples directory
+ubuntu@ip-172-31-37-238:~/firstmile$ cld app list
++-----------+----------+-------------+-------+--------+
+| Deploy ID | App Name | App Version | Cloud | Status |
++-----------+----------+-------------+-------+--------+
++-----------+----------+-------------+-------+--------+
+ubuntu@ip-172-31-37-238:~/firstmile$ cd examples/
+ubuntu@ip-172-31-37-238:~/firstmile/examples$ ls
+express-checkout  greetings-python  hello-world  README.txt  sample-yaml-files
+ubuntu@ip-172-31-37-238:~/firstmile/examples$ cd greetings-python/
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ ls
+application.py  README.txt  requirements.txt  templates
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld --help
+usage: cld [--version] [-v | -q] [--log-file LOG_FILE] [-h] [--debug]
+
+Multi-cloud application orchestration and service provisioning CLI.
+
+optional arguments:
+  --version            show program's version number and exit
+  -v, --verbose        Increase verbosity of output. Can be repeated.
+  -q, --quiet          Suppress output except warnings and errors.
+  --log-file LOG_FILE  Specify a file to log output. Disabled by default.
+  -h, --help           Show help message and exit.
+  --debug              Show tracebacks on errors.
+
+Commands:
+  app delete     Delete application
+  app deploy     Build and deploy application
+  app list       List applications
+  app logs       Retrieve application deployment and runtime logs
+  app show       Display application information
+  cloud reset    Reset cloud setup in FirstMile sandbox
+  cloud setup    Setup FirstMile sandbox for a particular cloud
+  complete       print bash completion command (cliff)
+  fm cleanup     Display steps to cleanup FirstMile workspace
+  fm logs        Retrieve FirstMile sandbox logs
+  fm restart     Display steps to restart FirstMile sandbox
+  help           print detailed help for another command (cliff)
+  service delete  Delete service instance
+  service list   List service instances
+  service provision  Provision service instance
+  service restrict-access  Restrict access to a service instance
+  service show   Display service instance information
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld service provision --help
+usage: cld service provision [-h] [--service SERVICE_NAME] [--cloud CLOUD]
+
+Provision service instance
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --service SERVICE_NAME
+                        Name of the required service (E.g.: mysql)
+  --cloud CLOUD         Destination to deploy application (local-docker, aws,
+                        google)
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld service provision --service mysql --cloud local-docker
+Deploying instance of mysql on local-docker
++--------------+-----------+--------------+
+| Service Name | Deploy ID |    Cloud     |
++--------------+-----------+--------------+
+|    mysql     |     1     | local-docker |
++--------------+-----------+--------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld service list
++-----------+--------------+---------------------+--------------+----------------------------+
+| Deploy ID | Service Name |   Service Version   |    Cloud     |           Status           |
++-----------+--------------+---------------------+--------------+----------------------------+
+|     1     |    mysql     | 2018-03-26-15-36-09 | local-docker | DEPLOYING_SERVICE_INSTANCE |
++-----------+--------------+---------------------+--------------+----------------------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld service list
++-----------+--------------+---------------------+--------------+----------------------------+
+| Deploy ID | Service Name |   Service Version   |    Cloud     |           Status           |
++-----------+--------------+---------------------+--------------+----------------------------+
+|     1     |    mysql     | 2018-03-26-15-36-09 | local-docker | DEPLOYING_SERVICE_INSTANCE |
++-----------+--------------+---------------------+--------------+----------------------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld service list
++-----------+--------------+---------------------+--------------+-----------------------------+
+| Deploy ID | Service Name |   Service Version   |    Cloud     |            Status           |
++-----------+--------------+---------------------+--------------+-----------------------------+
+|     1     |    mysql     | 2018-03-26-15-36-09 | local-docker | SERVICE_DEPLOYMENT_COMPLETE |
++-----------+--------------+---------------------+--------------+-----------------------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld service show 
+Please enter service deploy id>1
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+| Deploy ID |   Service Version   |    Cloud     |            Status           |          Service Info         |
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+|     1     | 2018-03-26-15-36-09 | local-docker | SERVICE_DEPLOYMENT_COMPLETE |    MYSQL_VERSION: mysql:5.5   |
+|           |                     |              |                             |        DB_NAME: testdb        |
+|           |                     |              |                             |         USER: testuser        |
+|           |                     |              |                             |      HOST IP:  172.17.0.3     |
+|           |                     |              |                             |    PASSWORD: testpass123!#$   |
+|           |                     |              |                             | ROOT_PASSWORD: testpass123!#$ |
+|           |                     |              |                             |                               |
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cp ../sample-yaml-files/cld.yaml.local-docker .
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ mv cld.yaml.local-docker cld.yaml
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ more cld.yaml 
+application:
+  type: python
+  entry_point: application.py
+  env_variables:
+    DB: testdb
+    HOST: 172.17.0.4
+    USER: testuser
+    PASSWORD: testpass123!#$
+cloud:
+  type: local-docker
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ vi cld.yaml 
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ more cld.yaml
+application:
+  type: python
+  entry_point: application.py
+  env_variables:
+    DB: testdb
+    HOST: 172.17.0.3
+    USER: testuser
+    PASSWORD: testpass123!#$
+cloud:
+  type: local-docker
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld app deploy
++------------------+-----------+--------------+
+|     App Name     | Deploy ID |    Cloud     |
++------------------+-----------+--------------+
+| greetings-python |     1     | local-docker |
++------------------+-----------+--------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld app list
++-----------+------------------+---------------------+--------------+--------+
+| Deploy ID |     App Name     |     App Version     |    Cloud     | Status |
++-----------+------------------+---------------------+--------------+--------+
+|     1     | greetings-python | 2018-03-26-15-38-35 | local-docker |        |
++-----------+------------------+---------------------+--------------+--------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld app list
++-----------+------------------+---------------------+--------------+--------------+
+| Deploy ID |     App Name     |     App Version     |    Cloud     |    Status    |
++-----------+------------------+---------------------+--------------+--------------+
+|     1     | greetings-python | 2018-03-26-15-38-35 | local-docker | BUILDING_APP |
++-----------+------------------+---------------------+--------------+--------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld app list
++-----------+------------------+---------------------+--------------+--------------+
+| Deploy ID |     App Name     |     App Version     |    Cloud     |    Status    |
++-----------+------------------+---------------------+--------------+--------------+
+|     1     | greetings-python | 2018-03-26-15-38-35 | local-docker | BUILDING_APP |
++-----------+------------------+---------------------+--------------+--------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld app list
++-----------+------------------+---------------------+--------------+-------------------------+
+| Deploy ID |     App Name     |     App Version     |    Cloud     |          Status         |
++-----------+------------------+---------------------+--------------+-------------------------+
+|     1     | greetings-python | 2018-03-26-15-38-35 | local-docker | APP_DEPLOYMENT_COMPLETE |
++-----------+------------------+---------------------+--------------+-------------------------+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld app show 
+Please enter deploy id>1
++------------------+---------------------+--------------+-------------------------+----------------------------------+
+|     App Name     |     App Version     |    Cloud     |          Status         |             App Info             |
++------------------+---------------------+--------------+-------------------------+----------------------------------+
+| greetings-python | 2018-03-26-15-38-35 | local-docker | APP_DEPLOYMENT_COMPLETE | APP URL:  http://localhost:32768 |
+|                  |                     |              |                         |                                  |
++------------------+---------------------+--------------+-------------------------+----------------------------------+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Verify Deployment:
+==================
+
+
+If using your own Laptop:
+-------------------------
+- Open browser to point to the APP URL
+
+
+If using Ubuntu VM on AWS:
+--------------------------
+- Find Public IP address of the VM
+- Open browser to point to the APP URL with 'localhost' replaced with the Public IP address of the VM
+
+
+Verify DB interactions:
+-----------------------
+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ sudo apt-get install mysql-client
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following additional packages will be installed:
+  libaio1 mysql-client-5.7 mysql-client-core-5.7 mysql-common
+The following NEW packages will be installed:
+  libaio1 mysql-client mysql-client-5.7 mysql-client-core-5.7 mysql-common
+0 upgraded, 5 newly installed, 0 to remove and 60 not upgraded.
+Need to get 8,072 kB of archives.
+After this operation, 65.9 MB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 http://us-west-2.ec2.archive.ubuntu.com/ubuntu xenial/main amd64 libaio1 amd64 0.3.110-2 [6,356 B]
+Get:2 http://us-west-2.ec2.archive.ubuntu.com/ubuntu xenial-updates/main amd64 mysql-client-core-5.7 amd64 5.7.21-0ubuntu0.16.04.1 [6,363 kB]
+:
+:
+Setting up mysql-client-5.7 (5.7.21-0ubuntu0.16.04.1) ...
+Setting up mysql-client (5.7.21-0ubuntu0.16.04.1) ...
+Processing triggers for libc-bin (2.23-0ubuntu10) ...
+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld service show
+Please enter service deploy id>1
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+| Deploy ID |   Service Version   |    Cloud     |            Status           |          Service Info         |
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+|     1     | 2018-03-26-15-36-09 | local-docker | SERVICE_DEPLOYMENT_COMPLETE |    MYSQL_VERSION: mysql:5.5   |
+|           |                     |              |                             |        DB_NAME: testdb        |
+|           |                     |              |                             |         USER: testuser        |
+|           |                     |              |                             |      HOST IP:  172.17.0.3     |
+|           |                     |              |                             |    PASSWORD: testpass123!#$   |
+|           |                     |              |                             | ROOT_PASSWORD: testpass123!#$ |
+|           |                     |              |                             |                               |
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ mysql -h 172.17.0.3 --user=testuser --password='testpass123!#$'
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 7
+Server version: 5.5.59 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| testdb             |
++--------------------+
+2 rows in set (0.00 sec)
+
+mysql> use testdb;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++------------------+
+| Tables_in_testdb |
++------------------+
+| message          |
++------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from message;
++----+-----------------------+
+| id | greeting              |
++----+-----------------------+
+|  1 | Hello, World!         |
+|  2 | Hello Cloud Computing |
++----+-----------------------+
+2 rows in set (0.00 sec)
+
+mysql>exit;
