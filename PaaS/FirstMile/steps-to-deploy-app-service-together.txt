@@ -1,3 +1,6 @@
+FirstMile example usage:
+========================
+
 ubuntu@ip-172-31-36-71:~$ git clone https://github.com/cloud-ark/firstmile.git
 Cloning into 'firstmile'...
 remote: Counting objects: 2235, done.
@@ -206,6 +209,116 @@ ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app list
 |     2     | greetings-python | 2018-03-21-21-48-17 | local-docker | APP_DEPLOYMENT_COMPLETE |
 +-----------+------------------+---------------------+--------------+-------------------------+
 ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ 
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+Verify Deployment:
+==================
+
+
+If using your own Laptop:
+-------------------------
+- Open browser to point to the APP URL
+
+
+If using Ubuntu VM on AWS:
+--------------------------
+- Find Public IP address of the VM
+- Open browser to point to the APP URL with 'localhost' replaced with the Public IP address of the VM
+
+
+Verify DB interactions:
+-----------------------
+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ sudo apt-get install mysql-client
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following additional packages will be installed:
+  libaio1 mysql-client-5.7 mysql-client-core-5.7 mysql-common
+The following NEW packages will be installed:
+  libaio1 mysql-client mysql-client-5.7 mysql-client-core-5.7 mysql-common
+0 upgraded, 5 newly installed, 0 to remove and 60 not upgraded.
+Need to get 8,072 kB of archives.
+After this operation, 65.9 MB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 http://us-west-2.ec2.archive.ubuntu.com/ubuntu xenial/main amd64 libaio1 amd64 0.3.110-2 [6,356 B]
+Get:2 http://us-west-2.ec2.archive.ubuntu.com/ubuntu xenial-updates/main amd64 mysql-client-core-5.7 amd64 5.7.21-0ubuntu0.16.04.1 [6,363 kB]
+:
+:
+Setting up mysql-client-5.7 (5.7.21-0ubuntu0.16.04.1) ...
+Setting up mysql-client (5.7.21-0ubuntu0.16.04.1) ...
+Processing triggers for libc-bin (2.23-0ubuntu10) ...
+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ cld service show
+Please enter service deploy id>1
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+| Deploy ID |   Service Version   |    Cloud     |            Status           |          Service Info         |
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+|     1     | 2018-03-26-15-36-09 | local-docker | SERVICE_DEPLOYMENT_COMPLETE |    MYSQL_VERSION: mysql:5.5   |
+|           |                     |              |                             |        DB_NAME: testdb        |
+|           |                     |              |                             |         USER: testuser        |
+|           |                     |              |                             |      HOST IP:  172.17.0.4     |
+|           |                     |              |                             |    PASSWORD: testpass123!#$   |
+|           |                     |              |                             | ROOT_PASSWORD: testpass123!#$ |
+|           |                     |              |                             |                               |
++-----------+---------------------+--------------+-----------------------------+-------------------------------+
+
+ubuntu@ip-172-31-37-238:~/firstmile/examples/greetings-python$ mysql -h 172.17.0.4 --user=testuser --password='testpass123!#$'
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 7
+Server version: 5.5.59 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| testdb             |
++--------------------+
+2 rows in set (0.00 sec)
+
+mysql> use testdb;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++------------------+
+| Tables_in_testdb |
++------------------+
+| message          |
++------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from message;
++----+-----------------------+
+| id | greeting              |
++----+-----------------------+
+|  1 | Hello, World!         |
+|  2 | Hello Cloud Computing |
++----+-----------------------+
+2 rows in set (0.00 sec)
+
+mysql>exit;
+
+
+------------------------------------------------------------------------------------------------------------
+
+Cleanup:
+=========
+
+
 ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app delete --deploy-id 1
 Request to delete application with deploy-id 1 accepted.
 ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld app delete --deploy-id 2
@@ -222,3 +335,5 @@ ubuntu@ip-172-31-36-71:~/firstmile/examples/greetings-python$ cld service list
 | Deploy ID | Service Name | Service Version | Cloud | Status |
 +-----------+--------------+-----------------+-------+--------+
 +-----------+--------------+-----------------+-------+--------+
+
+
