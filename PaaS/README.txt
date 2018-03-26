@@ -9,7 +9,7 @@ on AWS Elastic Beanstalk
 
 FirstMile
 ----------
-FirstMile is a command-line tool that simplifies the development and deployment of
+FirstMile is a command-line tool that simplifies development and deployment of
 web applications for Amazon Elastic Beanstalk and Google App Engine.
 
 https://github.com/cloud-ark/firstmile.
@@ -58,15 +58,15 @@ $ cld app show --deploy-id <dep-id>
 
 -----------------------------------
 
-How FirstMile works?
----------------------
-FirstMile uses Docker to package your application and deploy it. For MySQL service, FirstMile deploys
-a MySQL Docker container
+How does FirstMile work?
+------------------------
+FirstMile uses Docker to package your application and deploy it. 
+For MySQL service, FirstMile deploys a MySQL Docker container.
 
 
-How is FirstMile different than docker-compose?
+How is FirstMile different from docker-compose?
 -----------------------------------------------
-For local development use-case FirstMile and docker-compose are kind of similar. Where FirstMile is
-different is that besides local development, it also allows you to deploy same code, without any
-modifications, to AWS Beanstalk and Google App Engine. This is not possible with docker-compose
+For local development use-case FirstMile and docker-compose are kind of similar. 
 
+Where FirstMile is different is that, besides local development, it also allows you to deploy same code, without any
+modifications, to AWS Beanstalk and Google App Engine. This is not possible with docker-compose.
