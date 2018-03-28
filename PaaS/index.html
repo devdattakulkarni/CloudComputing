@@ -1,0 +1,98 @@
+<html>
+<head>
+<style>
+.bodycenter {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}
+
+.footer{
+    text-align: center;
+    border: 1px solid #73AD21;
+}
+</style>
+</head>
+<body>
+    
+    <div class="footer">
+      <p>Message:</p>
+      <p>{{ message }}</p>
+    </div>
+
+  <div class="bodycenter">
+ 
+    <form action="add_movie" method="post">
+      <h4>Insert Movie</h4>
+      <br>
+      Year: <input type="text" name="year"><br>
+      Title: <input type="text" name="title"><br>
+      Director: <input type="text" name="director"><br>
+      Actor: <input type="text" name="actor"><br>
+      Release Date: <input type="text" name="release_date"><br>
+      Rating: <input type="text" name="rating"><br>
+      <input type="submit" value="Insert Movie">
+    </form>
+    
+    <div class="footer">
+    </div>
+  </div>
+  <div class="bodycenter">
+ 
+    <form action="update_movie" method="post">
+      <h4>Update Movie</h4>
+      <br>
+      Year: <input type="text" name="year"><br>
+      Title: <input type="text" name="title"><br>
+      Director: <input type="text" name="director"><br>
+      Actor: <input type="text" name="actor"><br>
+      Release Date: <input type="text" name="release_date"><br>
+      Rating: <input type="text" name="rating"><br>
+      <input type="submit" value="Update Movie">
+    </form>
+    
+    <div class="footer">
+    </div>
+  </div>
+  <div class="bodycenter">
+ 
+    <form action="delete_movie" method="post">
+      <h4>Delete Movie</h4>
+      <br>
+      Title: <input type="text" name="delete_title"><br>
+      <input type="submit" value="Delete Movie">
+    </form>
+    
+    <div class="footer">
+    </div>
+  </div>
+  <div class="bodycenter">
+ 
+    <form action="search_movie" method="get">
+      <h4>Search Movie</h4>
+      <br>
+      Actor: <input type="text" name="search_actor"><br>
+      <input type="submit" value="Search Movie">
+    </form>
+    
+    <div class="footer">
+    </div>
+  </div>
+  <div class="bodycenter">
+ 
+    <h4>Print movie</h4>
+    <form action="highest_rating" method="get">
+      <br>
+      <input type="submit" value="Highest Rating movie">
+    </form>
+    
+    <form action="lowest_rating" method="get">
+      <br>
+      <input type="submit" value="Lowest Rating movie">
+    </form>
+
+    <div class="footer">
+    </div>
+  </div>
+</body>
+</html>
