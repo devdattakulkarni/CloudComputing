@@ -1,0 +1,56 @@
+Pre-requisites:
+----------------
+- Signup for Google Cloud Platform
+  - https://cloud.google.com/free/
+
+- Create a Google Cloud Platform Project from Google Cloud Console
+  - Note down the Project-ID; You will have to provide it during
+    application deployment
+
+
+1) git clone https://github.com/cloud-ark/caastle.git
+2) cd caastle
+3) ./install.sh
+4) cld setup gcloud
+   - Follow the steps
+5) ./start-caastle.sh
+
+6) cld app list
+7) cd examples/greetings/
+
+8) Create Environment:
+   - cld env create envapril4 environment-cloudsql-gke.yaml 
+   - cld env show envapril4
+   - cld resource list
+   - cld env show envapril4
+
+more README.txt 
+
+9) Build and Push Container:
+   - cld container create contapril4 gcr
+   - cld container show contapril4
+
+more README.txt 
+
+10) Deploy application container
+    - Edit app-gcloud.yaml to include the container URI
+      - emacs app-gcloud.yaml 
+
+11) cld env list
+
+12) cld app deploy greetings-april4 envapril4 app-gcloud.yaml
+
+- cld app show greetings-april4
+- cld app logs greetings-april4
+- more /home/devdatta/.cld/data/deployments/greetings-april4/2018-04-04-12-31-38/logs/greetings-april4.deploy-log <use your app's log path>
+- more /home/devdatta/.cld/data/deployments/greetings-april4/2018-04-04-12-31-38/logs/greetings-april4.runtime-log <use your app's log path>
+
+- cld app list
+- cld container list
+- cld env list
+- cld app delete  greetings-april4
+- cld env delete envapril4
+- cld container list
+- cld container delete contapril4
+- cld env list
+- cld resource list
