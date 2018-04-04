@@ -7,6 +7,10 @@ Pre-requisites:
   - Note down the Project-ID; You will have to provide it during
     application deployment
 
+- Navigate to Google Cloud Console and enable:
+  - Kubernetes API
+  - Cloud SQL API
+
 
 1) git clone https://github.com/cloud-ark/caastle.git
 2) cd caastle
@@ -18,39 +22,56 @@ Pre-requisites:
 6) cld app list
 7) cd examples/greetings/
 
+Check README.txt for details.
+
 8) Create Environment:
    - cld env create envapril4 environment-cloudsql-gke.yaml 
    - cld env show envapril4
    - cld resource list
    - cld env show envapril4
 
-more README.txt 
+Once environment is 'available'
+
 
 9) Build and Push Container:
    - cld container create contapril4 gcr
    - cld container show contapril4
 
-more README.txt 
+Once container is 'ready'
+
 
 10) Deploy application container
-    - Edit app-gcloud.yaml to include the container URI
-      - emacs app-gcloud.yaml 
+    - Edit app-gcloud.yaml to include tagged_image value from output of 'cld container show' command
+      as value of 'image' field in app-gcloud.yaml
+      - Note that you will have to delete the previous value from this file.
 
-11) cld env list
+   - cld app deploy greetings-april4 envapril4 app-gcloud.yaml
+   - cld app show greetings-april4
 
-12) cld app deploy greetings-april4 envapril4 app-gcloud.yaml
 
-- cld app show greetings-april4
-- cld app logs greetings-april4
-- more /home/devdatta/.cld/data/deployments/greetings-april4/2018-04-04-12-31-38/logs/greetings-april4.deploy-log <use your app's log path>
-- more /home/devdatta/.cld/data/deployments/greetings-april4/2018-04-04-12-31-38/logs/greetings-april4.runtime-log <use your app's log path>
+11) Once application deployment is complete:
 
-- cld app list
-- cld container list
-- cld env list
-- cld app delete  greetings-april4
-- cld env delete envapril4
-- cld container list
-- cld container delete contapril4
-- cld env list
-- cld resource list
+    - cld app logs greetings-april4
+    - more /home/devdatta/.cld/data/deployments/greetings-april4/2018-04-04-12-31-38/logs/greetings-april4.deploy-log <use your app's log path>
+    - more /home/devdatta/.cld/data/deployments/greetings-april4/2018-04-04-12-31-38/logs/greetings-april4.runtime-log <use your app's log path>
+
+
+12) Run Kubernetes and Cloud SQL commands in the environment:
+    - cld env shell envapril4
+    - help
+    - kubectl get pods
+    - kubectl describe pods <pod-name> (<pod-name> will be available from the previous command)
+    - gcloud sql instances list
+ 
+
+13) Listing
+    - cld app list
+    - cld container list
+    - cld env list
+    - cld resource list
+
+
+14) Cleanup
+    - cld app delete  greetings-april4
+    - cld env delete envapril4
+    - cld container delete contapril4
