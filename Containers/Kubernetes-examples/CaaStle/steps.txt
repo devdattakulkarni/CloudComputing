@@ -12,51 +12,92 @@ Pre-requisites:
   - Cloud SQL API
 
 
-1) git clone https://github.com/cloud-ark/caastle.git
-2) cd caastle
-3) ./install.sh
-4) cld setup gcloud
-   - Follow the steps
-5) ./start-caastle.sh
+Steps:
+-------
 
-6) cld app list
-7) cd examples/greetings/
+0) CaaStle Documentation:
+   https://cloud-ark.github.io/caastle/docs/html/html/index.html
+
+1) Install CaaStle:
+   - git clone https://github.com/cloud-ark/caastle.git
+   - cd caastle
+   - ./install.sh
+
+CaaStle requires Docker to be available on the Host. For Ubuntu hosts, there is
+a script included in caastle repository: install-docker-ubuntu.sh
+
+You can run this script to install Docker. If you are running on EC2 instance, log out
+and log back in after installing Docker. This is required so that you get added to
+the Docker group and are able to run Docker commands without requiring 'sudo'.
+
+If you are on Mac, check https://cloud-ark.github.io/caastle/docs/html/html/installation.html
+
+
+2) Setup CaaStle for Google Cloud:
+   - cld setup gcloud
+   - Follow the steps
+
+3) Start CaaStle server:
+   - ./start-caastle.sh
+
+4) Verify the CaaStle installation and setup is working correctly:
+   - cld app list
+
+
+Deploy Application to GKE:
+--------------------------
+
+1) cd examples/greetings/
 
 Check README.txt for details.
 
-8) Create Environment:
+2) Create Environment:
    - cld env create envapril4 environment-cloudsql-gke.yaml 
    - cld env show envapril4
    - cld resource list
    - cld env show envapril4
 
-Once environment is 'available'
+Environment creation will take approximately 5/10 minutes. As part of 
+Environment creation, a one Node GKE cluster and a Google Cloud SQL instance are created.
+
+You can track creation of GKE cluster and Cloud SQL instance through the Google Cloud Console.
+
+Once environment is 'available', do following steps:
 
 
-9) Build and Push Container:
+3) Build and Push Container:
    - cld container create contapril4 gcr
    - cld container show contapril4
 
-Once container is 'ready'
+
+Above steps will build your application's container and push it to Google's Container Registry (GCR).
+It will take approximately 3/4 minutes.
+
+Once container is 'ready', do following steps:
 
 
-10) Deploy application container
+4) Deploy application container
     - Edit app-gcloud.yaml to include tagged_image value from output of 'cld container show' command
       as value of 'image' field in app-gcloud.yaml
-      - Note that you will have to delete the previous value from this file.
+      - Note that you will have to delete the previous image value from this file.
 
    - cld app deploy greetings-april4 envapril4 app-gcloud.yaml
    - cld app show greetings-april4
 
+Above steps will deploy your application container in the environment. CaaStle will create a Pod
+for your application and run it on the GKE cluster in the environment.
+It will also resolve the parameterized environment variables binding your application to the
+Google Cloud SQL instance created as part of the environment.
 
-11) Once application deployment is complete:
+
+5) Once application deployment is complete:
 
     - cld app logs greetings-april4
     - more /home/devdatta/.cld/data/deployments/greetings-april4/2018-04-04-12-31-38/logs/greetings-april4.deploy-log <use your app's log path>
     - more /home/devdatta/.cld/data/deployments/greetings-april4/2018-04-04-12-31-38/logs/greetings-april4.runtime-log <use your app's log path>
 
 
-12) Run Kubernetes and Cloud SQL commands in the environment:
+6) Run Kubernetes and Cloud SQL commands in the environment:
     - cld env shell envapril4
     - help
     - kubectl get pods
@@ -64,14 +105,22 @@ Once container is 'ready'
     - gcloud sql instances list
  
 
-13) Listing
+7) Listing
     - cld app list
     - cld container list
     - cld env list
     - cld resource list
 
 
-14) Cleanup
+8) Cleanup
     - cld app delete  greetings-april4
     - cld env delete envapril4
     - cld container delete contapril4
+
+
+9) Cleanup++
+   - Currently CaaStle does not automatically delete VPC network when Kubernetes cluster is deleted.
+     You should delete this manually from Google Cloud Console.
+
+   - Currently CaaStle does not automatically delete the GCR repository when container is deleted.
+     You should delete this manually from Google Cloud Console. 
