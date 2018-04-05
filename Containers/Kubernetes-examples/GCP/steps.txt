@@ -1,0 +1,41 @@
+Steps for deploying a stateful containerized application on GKE
+----------------------------------------------------------------
+Create free tier EC2 instance
+SSH into EC2 instance
+sudo apt-get install python
+curl https://sdk.cloud.google.com | bash
+git clone https://github.com/cloud-ark/caastle.git
+cd caastle
+./install-docker-ubuntu.sh 
+exit from EC2 instance
+SSH back into EC2 instance
+gcloud auth login <your-gmail-address>
+Create Project in Google Cloud Console
+export PROJECT_ID=<Project-ID-from-previous-step>
+export CLOUDSDK_COMPUTE_ZONE=us-central1-b
+cd examples/greetings/
+docker build -t gcr.io/${PROJECT_ID}/greetings:v1 .
+gcloud docker -- push gcr.io/${PROJECT_ID}/greetings:v1
+gcloud container clusters create --machine-type=g1-small --num-nodes=1 testcluster1
+gcloud sql instances create instance1 --tier=db-f1-micro --authorized-networks=0.0.0.0/0
+gcloud components install kubectl
+gcloud sql users set-password root % --instance instance1 --password 'testpass123!@#'
+sudo apt-get install mysql-client
+gcloud sql instances list
+mysql -h <IP-address-of-SQL-Instance> --user=root --password='testpass123!@#'
+mysql>create database testdb;
+Edit greetings-deployment.yaml and set the environment variables
+kubectl create -f greetings-deployment.yaml
+kubectl expose deployments --port=80 --target-port=5000 --type=LoadBalancer greetings-deployment
+kubectl get services
+kubectl get deployments
+kubectl get pods
+kubectl describe pods <pod-name>
+kubectl describe deployments <deployment-name>
+kubectl describe service <service-name>
+Once you get EXTERNAL-IP of the service, open it up in browser
+kubectl logs <pod-name>
+kubectl delete service <service-name>
+kubectl delete deployment <deployment-name>
+Delete the GKE cluster from Google Cloud Console
+Delete the Google Cloud SQL instance from Google Cloud Console
