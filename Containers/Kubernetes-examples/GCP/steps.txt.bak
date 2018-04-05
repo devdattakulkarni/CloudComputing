@@ -1,0 +1,100 @@
+    1  curl https://sdk.cloud.google.com | bash
+    2  ls
+    3  whereis python
+    4  which python
+    5  sudo apt-get install python
+    6  curl https://sdk.cloud.google.com | bash
+    7  exit
+    8  gcloud --help
+    9  vi install-docker.sh
+   10  chmod +x install-docker.sh 
+   11  ./install-docker.sh 
+   12  exit
+   13  gcloud auth list
+   14  gcloud auth login kulkarni.devdatta@gmail.com
+   15  gcloud config set project cloudark-test-gke
+   16  ls
+   17  git clone https://github.com/cloud-ark/caastle.git
+   18  cd caastle/
+   19  cd examples/greetings/
+   20  export PROJECT_ID=cloudark-test-gke
+   21  more Dockerfile 
+   22  docker build -t gcr.io/${PROJECT_ID}/greetings:v1 .
+   23  gcloud docker -- push gcr.io/${PROJECT_ID}/greetings:v1
+   24  gcloud container clusters list
+   25  gcloud container clusters --help
+   26  gcloud container clusters create --help
+   27  gcloud container clusters create --machine-type=g1-small --num-nodes=1
+   28  gcloud container clusters create --machine-type=g1-small --num-nodes=1 testcluster1
+   29  export CLOUDSDK_COMPUTE_ZONE=us-central1-b
+   30  gcloud container clusters create --machine-type=g1-small --num-nodes=1 testcluster1
+   31  gcloud sql instances create instance1 --help
+   32  gcloud sql instances create instance1 --tier=db-f1-micro --authorized-networks=0.0.0.0/0
+   33  gcloud components install kubectl
+   34  kubectl --help
+   35  vi greetings-pod.yaml 
+   36  gcloud sql instances list
+   37  gcloud sql users set-password root % --instance instance1 --password 'testpass123!@#'
+   38  sudo apt-get install mysql-client
+   39  gcloud sql instances list
+   40  mysql -h 35.225.61.225 --user=root --password='testpass123!@#'
+       mysql>create database testdb;
+
+   41  gcloud cloud sql --help
+   42  gcloud sql instances --help
+   43  history
+   44  gcloud sql instances list
+   45  vi greetings-pod.yaml 
+   46  docker images
+   47  vi greetings-pod.yaml 
+   48  more greetings-pod.yaml 
+   49  kubectl create -f greetings-pod.yaml 
+   50  kubectl get pods
+   51  kubectl describe pods
+   52  kubectl get pods
+   53  more greetings-pod.yaml 
+   54  vi greetings-service.yaml
+   55  kubectl create -f greetings-service.yaml 
+   56  vi greetings-service.yaml
+   57  kubectl create -f greetings-service.yaml 
+   58  kubectl get services
+   59  kubectl get deployments
+   60  kubectl expose service greetings1-service
+   61  kubectl expose service greeting1-service
+   62  kubectl get services
+   63  curl 104.198.169.242
+   64  curl 104.198.169.242:31063
+   65  vi greetings-deployment.yaml
+   66  sudo apt-get install emacs
+   67  emacs greetings-deployment.yaml 
+   68  kubectl get deployments
+   69  kubectl create -f greetings-deployment.yaml
+   70  cat -n greetings-deployment.yaml
+   71  emacs greetings-deployment.yaml
+   72  kubectl create -f greetings-deployment.yaml
+   73  emacs greetings-deployment.yaml
+   74  kubectl create -f greetings-deployment.yaml
+   75  kubectl get deployments
+   76  kubectl show deployments
+   77  kubectl describe deployments greetings1-deployment
+   78  kubectl show deployments
+   79  kubectl get deployments
+   80  kubectl expose deployments greetings1-deployment
+   81  kubectl get services
+   82  kubectl expose --help
+   83  kubectl expose deployments --type=LoadBalancer greetings1-deployment 
+   84  kubectl get deployments
+   85  kubectl delete deployments greetings1-deployment
+   86  kubectl expose deployments --port=80 --target-port=5000 --type=LoadBalancer greetings1-deployment 
+   87  kubectl create -f greetings-deployment.yaml
+   88  kubectl expose deployments --port=80 --target-port=5000 --type=LoadBalancer greetings1-deployment 
+   89  kubectl expose --port=80 --target-port=5000 --type=LoadBalancer greetings1-deployment 
+   90  kubectl expose deployments --port=80 --target-port=5000 --type=LoadBalancer greetings1-deployment 
+   91  kubectl delete service greetings1-deployment
+   92  kubectl expose deployments --port=80 --target-port=5000 --type=LoadBalancer greetings1-deployment 
+   93  kubectl get services
+   94  kubectl describe deployment greetings1-deployment
+   95  kubectl get pods
+   96  kubectl describe deployment greetings1-deployment
+   97  kubectl get services
+   98  history
