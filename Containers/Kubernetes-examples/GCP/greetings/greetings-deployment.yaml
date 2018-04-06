@@ -1,0 +1,30 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: greetings-deployment
+  labels:
+    app: greetings
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: greetings
+  template:
+    metadata:
+      labels:
+        app: greetings
+    spec:
+      containers:
+      - name: greetings1
+        image: gcr.io/cloudark-test-gke/greetings:v1
+        ports:
+        - containerPort: 5000
+        env:
+          - name: "PASSWORD"
+            value: testpass123!@#
+          - name: "DB"
+            value: testdb
+          - name: "HOST"
+            value: 35.225.61.225
+          - name: "USER"
+            value: root
