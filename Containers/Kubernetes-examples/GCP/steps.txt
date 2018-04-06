@@ -1,11 +1,13 @@
 Steps for deploying a stateful containerized application on GKE
 ----------------------------------------------------------------
 Create free tier EC2 instance
+- create Ubuntu 16.04 EC2 instance (free tier). Allow ingress for port 22 from anywhere (0.0.0.0/0)
 SSH into EC2 instance
+- To SSH, $ chmod 400 <your-key-pair>.pem ; $ ssh -i <your-key-pair>.pem ubuntu@<ec2 instance endpoint url>
 sudo apt-get install python
 curl https://sdk.cloud.google.com | bash
-git clone https://github.com/cloud-ark/caastle.git
-cd caastle
+git clone https://github.com/devdattakulkarni/CloudComputing.git
+cd Containers/Kubernetes-examples/GCP/
 ./install-docker-ubuntu.sh 
 exit from EC2 instance
 SSH back into EC2 instance
@@ -13,7 +15,8 @@ gcloud auth login <your-gmail-address>
 Create Project in Google Cloud Console
 export PROJECT_ID=<Project-ID-from-previous-step>
 export CLOUDSDK_COMPUTE_ZONE=us-central1-b
-cd examples/greetings/
+gcloud config set project ${PROJECT_ID}
+cd greetings
 docker build -t gcr.io/${PROJECT_ID}/greetings:v1 .
 gcloud docker -- push gcr.io/${PROJECT_ID}/greetings:v1
 gcloud container clusters create --machine-type=g1-small --num-nodes=1 testcluster1
@@ -33,7 +36,7 @@ kubectl get pods
 kubectl describe pods <pod-name>
 kubectl describe deployments <deployment-name>
 kubectl describe service <service-name>
-Once you get EXTERNAL-IP of the service, open it up in browser
+Once you get EXTERNAL-IP of the service, open it up in browser (It may take couple of minutes for the application to respond)
 kubectl logs <pod-name>
 kubectl delete service <service-name>
 kubectl delete deployment <deployment-name>

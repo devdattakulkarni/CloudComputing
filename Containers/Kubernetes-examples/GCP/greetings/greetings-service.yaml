@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: greeting-service
+spec:
+  selector:
+    app: greetings
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
+  type: LoadBalancer
