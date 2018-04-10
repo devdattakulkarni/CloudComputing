@@ -1,21 +1,21 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: greetings1
+  name: greetings
   labels:
-    name: greetings1
+    name: greetings
 spec:
   containers:
     - image: us.gcr.io/cloudark-test-gke/greetpod:1512924392448
-      name: wordpress
+      name: greetpod
       ports:
       - containerPort: 5000
       env:
         - name: "PASSWORD"
-          value: $CLOUDARK_CLOUDSQL_Password
+          value: testpass123!@#
         - name: "DB"
-          value: $CLOUDARK_CLOUDSQL_DBName
+          value: testdb
         - name: "HOST"
-          value: $CLOUDARK_CLOUDSQL_Address
+          value: 35.225.61.225
         - name: "USER"
-          value: $CLOUDARK_CLOUDSQL_Username
+          value: root
