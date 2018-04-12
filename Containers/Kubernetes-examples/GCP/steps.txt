@@ -1,6 +1,9 @@
 Steps for deploying a stateful containerized application on GKE
 ----------------------------------------------------------------
 
+Note: These steps are for Ubuntu. Feel free to use Mac OS if you like.
+You will have to figure out how to install Docker and Google Cloud CLI on Mac OS.
+
 1) Install Docker and gcloud CLI
 Create free tier EC2 instance
 - create Ubuntu 16.04 EC2 instance (free tier). Allow ingress for port 22 from anywhere (0.0.0.0/0)
@@ -16,8 +19,9 @@ SSH back into EC2 instance
 
 
 2) Configure authentication for gcloud CLI
-gcloud auth login <your-gmail-address>
-Create Project in Google Cloud Console
+gcloud auth login --> Follow the prompts (you will have to open browser window and paste the generated link, then paste the generated code in
+the verification field in your console.)
+Create Project in Google Cloud Console --> Note down the Project ID. Remember that Project ID is different than the Project's Name. You will need Project ID in subsequent steps.
 export PROJECT_ID=<Project-ID-from-previous-step>
 export CLOUDSDK_COMPUTE_ZONE=us-central1-b
 gcloud config set project ${PROJECT_ID}
