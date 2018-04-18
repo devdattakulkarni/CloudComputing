@@ -1,0 +1,10 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: greetings-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: greetings-ip
+spec:
+  backend:
+    serviceName: greetings-deployment
+    servicePort: 5000
