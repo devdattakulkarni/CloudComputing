@@ -1,0 +1,12 @@
+echo "This is the deploy step"
+cd Containers/Kubernetes-examples/GCP/greetings
+kubectl delete deployment greetings-deployment || echo "greetings-deployment deployment does not exist"
+kubectl delete service greetings-deployment || echo "greetings-deployment service does not exist"
+kubectl delete ingress greetings-ingress || echo "greetings-ingress does not exist"
+
+kubectl create -f greetings-deployment.yaml
+kubectl expose deployment greetings-deployment --target-port=5000 --type=NodePort
+
+kubectl apply -f greetings-ingress.yaml
+
+echo "Done deploying"

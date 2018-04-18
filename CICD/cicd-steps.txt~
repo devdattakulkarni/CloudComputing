@@ -1,0 +1,163 @@
+Steps to set up CI/CD workflow using Jenkins with your Bitbucket repository.
+----------------------------------------------------------------------------
+
+Setup:
+------
+Conceptually you need two different machines for this exercise.
+
+Machine 1: This machine/VM will be your developer workspace where you are developing your application.
+Machine 2: This VM will be your Jenkins server
+
+Machine 1 can be your personal Laptop or a cloud VM.
+
+Machine 2 *has* to be a cloud VM (such as a EC2 instance).
+You will need to use a publicly available VM instance for Machine2
+Feel free to choose either a EC2 instance or / Google Compute Engine instance
+Make sure you allow TCP traffic to port 8080 on your VM instance.
+
+
+Setup of your developer workspace/Machine 1:
+---------------------------------------------
+1) Install Google Cloud CLI
+   - sudo apt-get install python
+   - curl https://sdk.cloud.google.com | bash
+
+2) Configure authentication for gcloud CLI
+   - gcloud auth login --> Follow the prompts (you will have to open browser window and paste the generated link,
+       then paste the generated code in the verification field in your console.)
+   - Create Project in Google Cloud Console --> Note down the Project ID. Remember that Project ID is different than the Project's Name.
+       You will need Project ID in subsequent steps.
+   - export PROJECT_ID=<Project-ID-from-previous-step>
+   - export CLOUDSDK_COMPUTE_ZONE=us-central1-b
+   - gcloud config set project ${PROJECT_ID}
+
+3) Create a Google Cloud SQL instance
+   - gcloud sql instances create instance1 --tier=db-f1-micro --authorized-networks=0.0.0.0/0
+
+4) Create testdb database on the Cloud SQL instance
+   - gcloud sql users set-password root % --instance instance1 --password 'testpass123!@#'
+   - sudo apt-get install mysql-client
+   - gcloud sql instances list
+   - mysql -h <IP-address-of-SQL-Instance> --user=root --password='testpass123!@#'
+   - mysql>create database testdb;
+
+5) Create your Bitbucket repository named "assignment6"
+   - Make it Public
+
+6) Download Sample CI/CD project
+   - git clone https://github.com/devdattakulkarni/CloudComputing
+   - cd CICD/greetings
+   - Edit greetings-deployment.yaml and set the environment variables corresponding to
+     the Google Cloud SQL instance
+     (Note: You don't need to change the image URI)
+   - Add a remote for your Bitbucket repository and Push the sample CI/CD project to that remote
+     - cd ..
+     - git remote add origin1 git@bitbucket.org:<your-bitbucket-username>/assignment6.git
+     - git push origin1 master
+
+
+
+Setup of Jenkins Server/Machine 2:
+-----------------------------------
+1) Jenkins Server Installation preparation:
+   - Login to your Cloud VM instance (Machine2)
+   - Install Java (JRE and JDK)
+     - sudo apt-add-repository ppa:openjdk-r/ppa
+     - sudo apt-get install -y openjdk-8-jre openjdk-8-jdk wget
+   - Install Google Cloud CLI
+     - sudo apt-get install python
+     - curl https://sdk.cloud.google.com | bash
+   - Install Kubectl
+     - gcloud components install kubectl
+   - Install Docker
+     - git clone https://github.com/devdattakulkarni/CloudComputing.git
+     - cd Containers/Kubernetes-examples/GCP/
+     - ./install-docker-ubuntu.sh 
+     - exit from Cloud VM instance
+     - SSH back into Cloud VM EC2 instance
+
+2) Download and Start Jenkins Server:
+   - wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+   - nohup java -jar jenkins.war --httpPort=8080 &
+
+3) Configure Jenkins Server
+   - Point your browser to the DNS name of the Jenkins Server at port 8080
+     https://<DNS-of-Jenkins-Server>:8080/
+   - Keep the user as 'admin'
+   - Install recommended plugins
+
+4) Once Jenkins starts up do following:
+   4.1) Login as admin user
+        - Password is stored in: $HOME/.jenkins/secrets/initialAdminPassword
+   4.2) Set the path in Jenkins for Git
+        Jenkins -> Manage Jenkins -> Configure -> Global Properties
+        - Check Tool Locations
+        - List of tool locations (Choose Git)
+        - Set the path of Git from your VM
+          (You can find the path by running 'which git' on VM)
+   4.3) Install the Post build task Plugin
+        Jenkins -> Manage Jenkins -> Manage Plugins -> Post build task plugin
+   4.4) Install Bitbucket Plugin
+        Jenkins -> Manage Jenkins -> Manage Plugins -> Bitbucket
+
+5) Add a WebHook to your Bitbucket repository
+   5.1) Go to your Bitbucket repository -> Settings -> URL
+         - http://ec2-34-212-126-125.us-west-2.compute.amazonaws.com:8080/bitbucket-hook/
+        - Check Status to Active
+        - Check "Skip certificate verification"
+        - Triggers -> Choose from a full list of triggers
+          - Select following: 
+            - Repository->Push, Pull Request->Created, Updated, Comment created, Comment updated, Comment deleted
+              Issue->Created, Issue->Updated, Issue->Comment Created
+   5.2) Generate a SSH Key pair and add it to your Bitbucket account
+        - Account -> Settings -> Add Key
+          - You can either generate an SSH key or add an existing key if you have one
+         
+6) Set up a Jenkins Job
+   6.1) Make sure your Bitbucket repository ("assignment6") is Public
+        - This will make it possible to be cloned by Jenkins.
+   6.2) Jenkins -> New Item -> Give name -> Select Freestyle project
+        -> Source Code Management -> Give Bitbucket Repository URL (in git)
+   6.3) Build Triggers
+        -> Choose "Build when a change is pushed to BitBucket"
+   6.4) Buid Section -> Choose Execute Shell script
+        -> In the Execute shell Command section:
+           - Add contents of build-steps.txt (first modify build-steps.txt to use your GCP Project ID)
+   6.5) In Post-build Actions
+        -> Tasks -> Log text "SUCCESS" -> Operation "-- OR --"
+           -> In the Tasks -> Script section:
+	      - Add contents of deploy-steps.txt (modify the steps with your assignment's name)
+
+
+
+CI/CD Experiment:
+-----------------
+1) Make changes to your code and push the code:
+   - Modify index.html
+   - git add
+   - git commit
+   - git push origin1 master
+
+2) Open 
+
+
+
+
+
+
+
+Help Commands:
+---------------
+1) Restarting Jenkins:
+   - From EC2 instance find out Jenkins process
+     - ps -eaf | grep java
+     - kill <process-id>
+   - Re-run Jenkins using the java command
+
+
+Reference:
+-----------
+- https://cloud.google.com/kubernetes-engine/docs/tutorials/http-balancer
+- https://blog.terrenceryan.com/index.php/making-kubernetes-ip-addresses-static-on-google-container-engine/
+
+
