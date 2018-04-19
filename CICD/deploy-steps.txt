@@ -1,5 +1,13 @@
 echo "This is the deploy step"
-cd Containers/Kubernetes-examples/GCP/greetings
+
+export PROJECT_ID=cloudark-test-gke
+gcloud config set project $PROJECT_ID
+export CLOUDSDK_COMPUTE_ZONE=us-central1-b
+
+cd CICD/greetings
+
+gcloud container clusters get-credentials testcluster1
+
 kubectl delete deployment greetings-deployment || echo "greetings-deployment deployment does not exist"
 kubectl delete service greetings-deployment || echo "greetings-deployment service does not exist"
 kubectl delete ingress greetings-ingress || echo "greetings-ingress does not exist"
