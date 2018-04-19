@@ -235,16 +235,17 @@ Delete the Static IP address using gcloud CLI:
 Troubleshooting:
 ----------------
 1) Restarting Jenkins:
-   - From EC2 instance find out Jenkins process
+   - On Machine 2 find out Jenkins process
      - ps -eaf | grep java
      - kill <process-id>
-   - Re-run Jenkins using the java command
+   - Re-run Jenkins using the java command (Part B step 2)
 
 2) Jenkins URL location
    Jenkins -> Manage Jenkins -> Jenkins Location
 
 3) Jenkins workspace
    - On Jenkins Server at $HOME/.jenkins/workspace
+   - This is the location where repository is cloned corresponding to Jenkins Jobs
 
 
 
