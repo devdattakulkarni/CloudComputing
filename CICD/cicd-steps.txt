@@ -14,6 +14,8 @@ Machine 2 *has* to be a cloud VM (such as a EC2 instance).
 Feel free to choose either a EC2 instance or Google Compute Engine instance
 Make sure you allow TCP traffic to port 8080 on your VM instance.
 
+If using EC2, create a Free tier Ubuntu 16.04 VM
+
 Note: It is fine to use a single VM as Machine 1 and Machine 2. It is up to you.
 
 
@@ -22,6 +24,7 @@ A] Setup your developer workspace/Machine 1:
 1) Install Google Cloud CLI
    - sudo apt-get install python
    - curl https://sdk.cloud.google.com | bash
+   - log out and log back in
 
 2) Configure authentication for gcloud CLI
    - gcloud auth login --> Follow the prompts (you will have to open browser window and paste the generated link,
@@ -36,20 +39,30 @@ A] Setup your developer workspace/Machine 1:
    - gcloud sql instances create instance1 --tier=db-f1-micro --authorized-networks=0.0.0.0/0
 
 4) Create testdb database on the Cloud SQL instance
-   - gcloud sql users set-password root % --instance instance1 --password 'testpass123!@#'
-   - sudo apt-get install mysql-client
    - gcloud sql instances list
-   - mysql -h <IP-address-of-SQL-Instance> --user=root --password='testpass123!@#'
-   - mysql>create database testdb;
+   - Once the Cloud SQL instance is in 'RUNNABLE' state, do following steps:
+     - gcloud sql users set-password root % --instance instance1 --password 'testpass123!@#'
+     - sudo apt-get install mysql-client
+     - mysql -h <IP-address-of-SQL-Instance> --user=root --password='testpass123!@#'
+     - mysql>create database testdb;
+     - mysql>quit;
 
 5) Create a static IP address for our application
    - gcloud compute addresses create greetings-ip --global
 
 6) Create your Bitbucket repository named "assignment6"
    - Make it Public
-   - Generate a SSH Key pair and add it to your Bitbucket account
+   - Generate a SSH Key pair for your developer workspace VM 
+     and add it to your Bitbucket account
      - Account -> Settings -> Add Key
       - You can either generate an SSH key or add an existing key if you have one
+        - ssh-keygen
+        - It is fine if you provide an empty passphrase
+	- more ~/.ssh/id_rsa.pub
+	- Copy the key and paste it in the "Add Key" box in Bitbucket.
+        - When you paste the key, make sure that there are no extra spaces between the characters.
+          The pasting operation will unevenly break the key into multiple lines. Find such lines
+          and remove any extra spaces by hitting the Backspace key.
 
 7) Download Sample CI/CD project
    - git clone https://github.com/devdattakulkarni/CloudComputing
@@ -65,6 +78,8 @@ A] Setup your developer workspace/Machine 1:
      - git remote add origin1 git@bitbucket.org:<your-bitbucket-username>/assignment6.git
      - git push origin1 master
 
+8) Create GKE cluster
+   - gcloud container clusters create --machine-type=g1-small --num-nodes=1 testcluster1
 
 
 B] Setup your Jenkins Server/Machine 2:
@@ -73,18 +88,32 @@ B] Setup your Jenkins Server/Machine 2:
    - Login to your Cloud VM instance (Machine2)
    - Install Java (JRE and JDK)
      - sudo apt-add-repository ppa:openjdk-r/ppa
+     - sudo apt-get update
      - sudo apt-get install -y openjdk-8-jre openjdk-8-jdk wget
    - Install Google Cloud CLI
      - sudo apt-get install python
      - curl https://sdk.cloud.google.com | bash
-   - Install Kubectl
-     - gcloud components install kubectl
    - Install Docker
      - git clone https://github.com/devdattakulkarni/CloudComputing.git
-     - cd Containers/Kubernetes-examples/GCP/
+     - cd CloudComputing/Containers/Kubernetes-examples/GCP/
      - ./install-docker-ubuntu.sh 
-     - exit from Cloud VM instance
+   - Exit from Cloud VM instance
      - SSH back into Cloud VM instance
+   - Install Kubectl
+     - gcloud components install kubectl
+
+   - Generate a SSH Key pair for the Jenkins Server and add it to your Bitbucket account
+     - Account -> Settings -> Add Key
+      - You can either generate an SSH key or add an existing key if you have one
+        - ssh-keygen
+        - It is fine if you provide an empty passphrase
+	- more ~/.ssh/id_rsa.pub
+	- Copy the key and paste it in the "Add Key" box in Bitbucket.
+        - When you paste the key, make sure that there are no extra spaces between the characters.
+          The pasting operation will unevenly break the key into multiple lines. Find such lines
+          and remove any extra spaces by hitting the Backspace key.
+
+
 
 2) Download and Start Jenkins Server:
    - wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
@@ -93,25 +122,30 @@ B] Setup your Jenkins Server/Machine 2:
 3) Configure Jenkins Server
    - Point your browser to the DNS name of the Jenkins Server at port 8080
      https://<DNS-of-Jenkins-Server>:8080/
-   - Keep the user as 'admin'
-   - Install recommended plugins
+   - Enter admin password from $HOME/.jenkins/secrets/initialAdminPassword
+   - Choose Install suggested plugins option
 
 4) Once Jenkins starts up do following:
    4.1) Login as admin user
         - Password is stored in: $HOME/.jenkins/secrets/initialAdminPassword
    4.2) Set the path in Jenkins for Git
-        Jenkins -> Manage Jenkins -> Configure -> Global Properties
+        Jenkins -> Manage Jenkins -> Configure System -> Global Properties
         - Check Tool Locations
-        - List of tool locations (Choose Git)
+        - List of tool locations -> Add 
         - Set the path of Git from your VM
           (You can find the path by running 'which git' on VM)
-   4.3) Install the Post build task Plugin
-        Jenkins -> Manage Jenkins -> Manage Plugins -> Post build task plugin
-   4.4) Install Bitbucket Plugin
-        Jenkins -> Manage Jenkins -> Manage Plugins -> Bitbucket
+        - Save
+   4.3) Install the Post build task Plugin and Bitbucket Plugin
+        Jenkins -> Manage Jenkins -> Manage Plugins
+	- In Available tab, search "Post build task" and select
+	- In Available tab, search "Bitbucket" and select
+	  (Note: There are several Bitbucket plugins -- you want to choose whose
+           name contains only the word "Bitbucket" and nothing else)
+	- Choose Install without restarting option
+
 
 5) Add a WebHook to your Bitbucket repository
-   5.1) Go to your Bitbucket repository -> Settings -> URL. E
+   5.1) Go to your Bitbucket repository -> Settings -> Webhooks -> Add webhook
         - http://<DNS-of-Jenkins-server>:8080/bitbucket-hook/
           (Note: The trailing slash '/' is important. Don't forget that!!)
         - Make Status as "Active"
@@ -125,10 +159,12 @@ B] Setup your Jenkins Server/Machine 2:
    6.1) Make sure your Bitbucket repository ("assignment6") is Public
         - This will make it possible to be cloned by Jenkins.
    6.2) Jenkins -> New Item -> Give name -> Select Freestyle project
-        -> Source Code Management -> Give Bitbucket Repository URL (in git)
+        -> Source Code Management -> Git -> Give Bitbucket Repository URL (using git protocol)
+	(e.g.: git@bitbucket.org:devdattakulkarni/assignment6.git)
+        -> Leave Branches to build as empty
    6.3) Build Triggers
         -> Choose "Build when a change is pushed to BitBucket"
-   6.4) Buid Section -> Choose Execute Shell script
+   6.4) Buid Section -> Add a build step -> Execute Shell script
         -> In the Execute shell Command section:
            - Add contents of build-steps.txt 
              - Notes:
@@ -136,9 +172,13 @@ B] Setup your Jenkins Server/Machine 2:
                - Make sure that the image tag that use here is what you defined 
                  in deployment.yaml (Part A, step 7)
    6.5) In Post-build Actions
-        -> Tasks -> Log text "SUCCESS" -> Operation "-- OR --"
+        -> Add post-build action -> Post build task
+          -> Log text "SUCCESS" -> Operation "-- OR --"
            -> In the Tasks -> Script section:
-	      - Add contents of deploy-steps.txt (modify the steps with your assignment's name)
+	      - Add contents of deploy-steps.txt (modify the steps as required)
+   6.6) Save
+
+
 
 
 
@@ -159,11 +199,25 @@ CI/CD Experiment:
 
 4) On Machine 2 (Jenkins server):
    - kubectl get ingress
-   - Navigate to the IP address and verify that your changes
-     (Note: It may take 6/7 minutes before the ingress filtering routes will take effect
+     - Check the AGE field. It usually takes 7/8 minutes before the changes are reflected
+       on the Ingress IP address
+     - Navigate to the IP address and verify that your changes are visible
+     (Note: It may take 7/8 minutes before the ingress filtering routes will take effect
       and your changes are visible.)
 
-5) Repeat steps 2-3-4
+5) Repeat steps 2-3-4 with different changes to index.html
+
+
+
+
+Kubernetes YAML files:
+----------------------
+1) greetings-deployment.yaml
+   -> Environment variables need to be set with Google Cloud SQL instance details
+
+2) greetings-ingress.yaml
+   -> Contains configuration for the Global IP address that we create in Part A step 5
+   
 
 
 
@@ -172,10 +226,9 @@ Clean up:
 From Google Cloud Console:
 - Delete Kubernetes Cluster
 - Delete Google Cloud SQL Instance
-- Delete the Static IP address
 
-
-
+Delete the Static IP address using gcloud CLI:
+- gcloud compute addresses delete greetings-ip --global
 
 
 
@@ -188,8 +241,10 @@ Troubleshooting:
    - Re-run Jenkins using the java command
 
 2) Jenkins URL location
+   Jenkins -> Manage Jenkins -> Jenkins Location
 
-3) 
+3) Jenkins workspace
+   - On Jenkins Server at $HOME/.jenkins/workspace
 
 
 

@@ -1,6 +1,6 @@
 echo "This is a build step"
 
-cd Containers/Kubernetes-examples/GCP/greetings
+cd CICD/greetings
 docker build -t gcr.io/cloudark-test-gke/greetings .
 gcloud docker -- push gcr.io/cloudark-test-gke/greetings
 
