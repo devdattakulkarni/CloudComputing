@@ -117,7 +117,7 @@ B] Setup your Jenkins Server/Machine 2:
 
 2) Download and Start Jenkins Server:
    - wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
-   - nohup java -jar jenkins.war --httpPort=8080 &
+   - java -jar jenkins.war --httpPort=8080
 
 3) Configure Jenkins Server
    - Point your browser to the DNS name of the Jenkins Server at port 8080
@@ -178,8 +178,12 @@ B] Setup your Jenkins Server/Machine 2:
 	      - Add contents of deploy-steps.txt (modify the steps as required)
    6.6) Save
 
-
-
+   6.7) Bitbucket host key verification
+        
+	Once you hit 'Save', you will see a prompt to verify the key for bitbucket server.
+        This indicates that Jenkins has received the web hook and wants to clone your repository.
+        In order to clone the repo, it needs to first verify the host key. Enter 'yes' to accept
+        the specified host key.
 
 
 CI/CD Experiment:
@@ -192,12 +196,18 @@ CI/CD Experiment:
    - git commit
    - git push origin1 master
 
-3) In the Jenkins Job you should see a new build triggered (visible under "Build History")
+3) (If Part B step 6.7 was not executed for some reason) On the Jenkins machine, 
+   you should see a prompt to verify the key for bitbucket server.
+   This indicates that Jenkins has received the web hook and wants to clone your repository.
+   In order to clone the repo, it needs to first verify the host key. Enter 'yes' to accept
+   the specified host key.
+
+4) In the Jenkins Job you should see a new build triggered (visible under "Build History")
    - Select the Build
    - Go to Console Output
    - Verify that the build and deploy steps have been executed
 
-4) On Machine 2 (Jenkins server):
+5) On Machine 2 (Jenkins server):
    - kubectl get ingress
      - Check the AGE field. It usually takes 7/8 minutes before the changes are reflected
        on the Ingress IP address
@@ -205,7 +215,7 @@ CI/CD Experiment:
      (Note: It may take 7/8 minutes before the ingress filtering routes will take effect
       and your changes are visible.)
 
-5) Repeat steps 2-3-4 with different changes to index.html
+6) Repeat steps 2-3-4 with different changes to index.html
 
 
 
