@@ -113,19 +113,32 @@ B] Setup your Jenkins Server/Machine 2:
           The pasting operation will unevenly break the key into multiple lines. Find such lines
           and remove any extra spaces by hitting the Backspace key.
 
+2) Configure authentication for gcloud CLI
+   - gcloud auth login --> Follow the prompts (you will have to open browser window and paste the generated link,
+       then paste the generated code in the verification field in your console.)
+   - Create Project in Google Cloud Console --> Note down the Project ID. Remember that Project ID is different than the Project's Name.
+       You will need Project ID in subsequent steps.
+   - export PROJECT_ID=<Project-ID-from-previous-step>
+   - export CLOUDSDK_COMPUTE_ZONE=us-central1-b
+   - gcloud config set project ${PROJECT_ID}
 
+3) Disable Host key verification:
+   - create .ssh/config file
+   - Include following lines in it:
+     Host *
+         StrictHostKeyChecking no
 
-2) Download and Start Jenkins Server:
+4) Download and Start Jenkins Server:
    - wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
-   - java -jar jenkins.war --httpPort=8080
+   - nohup java -jar jenkins.war --httpPort=8080  &
 
-3) Configure Jenkins Server
+5) Configure Jenkins Server
    - Point your browser to the DNS name of the Jenkins Server at port 8080
      https://<DNS-of-Jenkins-Server>:8080/
    - Enter admin password from $HOME/.jenkins/secrets/initialAdminPassword
    - Choose Install suggested plugins option
 
-4) Once Jenkins starts up do following:
+6) Once Jenkins starts up do following:
    4.1) Login as admin user
         - Password is stored in: $HOME/.jenkins/secrets/initialAdminPassword
    4.2) Set the path in Jenkins for Git
@@ -144,7 +157,7 @@ B] Setup your Jenkins Server/Machine 2:
 	- Choose Install without restarting option
 
 
-5) Add a WebHook to your Bitbucket repository
+7) Add a WebHook to your Bitbucket repository
    5.1) Go to your Bitbucket repository -> Settings -> Webhooks -> Add webhook
         - http://<DNS-of-Jenkins-server>:8080/bitbucket-hook/
           (Note: The trailing slash '/' is important. Don't forget that!!)
@@ -155,7 +168,7 @@ B] Setup your Jenkins Server/Machine 2:
             - Repository->Push, Pull Request->Created, Updated, Comment created, Comment updated, Comment deleted
               Issue->Created, Issue->Updated, Issue->Comment Created
          
-6) Set up a Jenkins Job
+8) Set up a Jenkins Job
    6.1) Make sure your Bitbucket repository ("assignment6") is Public
         - This will make it possible to be cloned by Jenkins.
    6.2) Jenkins -> New Item -> Give name -> Select Freestyle project
