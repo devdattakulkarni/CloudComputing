@@ -30,19 +30,29 @@ gcloud config set project ${PROJECT_ID}
 3) Build and Push Application Docker container to Google Container Registry (GCR)
 cd greetings
 docker build -t gcr.io/${PROJECT_ID}/greetings:v1 .
+
+Enable Google Container Registry API in Cloud Console at
+https://console.cloud.google.com/apis/api/containerregistry.googleapis.com/overview?project=${PROJECT_ID}
+
+Then push the container to GCR
+
 gcloud docker -- push gcr.io/${PROJECT_ID}/greetings:v1
 
 
-4) Create a GKE cluster
+4) Enable Kubernetes Engine API in Cloud Console at
+https://console.cloud.google.com/apis/api/container.googleapis.com/overview?project=4{PROJECT_ID}
+
+5) Create a GKE cluster
 gcloud container clusters create --machine-type=g1-small --num-nodes=1 testcluster1
 
 
-5) Create a Google Cloud SQL instance
+6) Create a Google Cloud SQL instance
 gcloud sql instances create instance1 --tier=db-f1-micro --authorized-networks=0.0.0.0/0
 
 
-6) Create testdb database on the Cloud SQL instance
-gcloud sql users set-password root % --instance instance1 --password 'testpass123!@#'
+7) Create testdb database on the Cloud SQL instance
+gcloud sql users set-password root --instance=instance1 --host=35.184.210.53 --password='testpass123!@#'
+(If for some reason above command fails, you can set the password from Google CloudSQL console).
 sudo apt-get install mysql-client
 gcloud sql instances list
 mysql -h <IP-address-of-SQL-Instance> --user=root --password='testpass123!@#'
