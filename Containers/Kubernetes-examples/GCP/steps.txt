@@ -5,7 +5,8 @@ Note: These steps are for Ubuntu. Feel free to use Mac OS if you like.
 You will have to figure out how to install Docker and Google Cloud CLI on Mac OS.
 
 1) Install Docker and gcloud CLI
-Create free tier EC2 instance
+In order to use Ubuntu VM one option is to use free tier EC2 instance where you can
+then install the required tools and CLIs.
 - create Ubuntu 16.04 EC2 instance (free tier). Allow ingress for port 22 from anywhere (0.0.0.0/0)
 SSH into EC2 instance
 - To SSH, $ chmod 400 <your-key-pair>.pem ; $ ssh -i <your-key-pair>.pem ubuntu@<ec2 instance endpoint url>
@@ -29,6 +30,7 @@ gcloud config set project ${PROJECT_ID}
 
 3) Build and Push Application Docker container to Google Container Registry (GCR)
 cd greetings
+export PROJECT_ID=<Your-project-name>
 docker build -t gcr.io/${PROJECT_ID}/greetings:v1 .
 
 Enable Google Container Registry API in Cloud Console at
@@ -40,7 +42,7 @@ gcloud docker -- push gcr.io/${PROJECT_ID}/greetings:v1
 
 
 4) Enable Kubernetes Engine API in Cloud Console at
-https://console.cloud.google.com/apis/api/container.googleapis.com/overview?project=4{PROJECT_ID}
+https://console.cloud.google.com/apis/api/container.googleapis.com/overview?project=${PROJECT_ID}
 
 5) Create a GKE cluster
 gcloud container clusters create --machine-type=g1-small --num-nodes=1 testcluster1
@@ -51,7 +53,9 @@ gcloud sql instances create instance1 --tier=db-f1-micro --authorized-networks=0
 
 
 7) Create testdb database on the Cloud SQL instance
-gcloud sql users set-password root --instance=instance1 --host=35.184.210.53 --password='testpass123!@#'
+
+gcloud sql users set-password root --host % --instance instance1 --password 'testpass123!@#'
+
 (If for some reason above command fails, you can set the password from Google CloudSQL console).
 sudo apt-get install mysql-client
 gcloud sql instances list
@@ -59,28 +63,28 @@ mysql -h <IP-address-of-SQL-Instance> --user=root --password='testpass123!@#'
 mysql>create database testdb;
 
 
-7) Install kubectl
+8) Install kubectl
 gcloud components install kubectl
 
 
-8) Deploy application container
+9) Deploy application container
 Edit greetings-deployment.yaml and set the environment variables
 kubectl create -f greetings-deployment.yaml
 kubectl expose deployments --port=80 --target-port=5000 --type=LoadBalancer greetings-deployment
 
 
-9) Verify if relevant Kubernetes Objects have been created or not
+10) Verify if relevant Kubernetes Objects have been created or not
 kubectl get services
 kubectl get deployments
 kubectl get pods
 kubectl describe pods <pod-name>
 kubectl describe deployments <deployment-name>
 kubectl describe service <service-name>
-Once you get EXTERNAL-IP of the service, open it up in browser (It may take couple of minutes for the application to respond)
+Once you get EXTERNAL-IP of the service, open it up in browser (it may take couple of minutes for the application to respond)
 kubectl logs <pod-name>
 
 
-10) Clean-up steps (Do these only after your assignment has been graded)
+11) Clean-up steps (Do these only after your assignment has been graded)
 kubectl delete service <service-name>
 kubectl delete deployment <deployment-name>
 Delete the GKE cluster from Google Cloud Console
