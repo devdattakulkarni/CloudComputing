@@ -247,6 +247,7 @@ Clean up:
 From Google Cloud Console:
 - Delete Kubernetes Cluster
 - Delete Google Cloud SQL Instance
+- Delete GCR artifacts from Google Cloud Console (Storage)
 
 Delete the Static IP address using gcloud CLI:
 - gcloud compute addresses delete greetings-ip --global
