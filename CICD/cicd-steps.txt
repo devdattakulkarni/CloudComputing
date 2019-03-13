@@ -11,7 +11,7 @@ Machine 2: This VM will be your Jenkins server (CI/CD server)
 Machine 1 can be your personal Laptop or a cloud VM.
 
 Machine 2 *has* to be a cloud VM (such as a EC2 instance).
-Feel free to choose either a EC2 instance or Google Compute Engine instance
+
 Make sure you allow TCP traffic to port 8080 on your VM instance.
 
 
@@ -37,7 +37,7 @@ A] Setup your developer workspace/Machine 1:
 4) Create testdb database on the Cloud SQL instance
    - gcloud sql instances list
    - Once the Cloud SQL instance is in 'RUNNABLE' state, do following steps:
-     - gcloud sql users set-password root % --instance instance1 --password 'testpass123!@#'
+     - gcloud sql users set-password root --host % --instance instance1 --password 'testpass123!@#'
      - sudo apt-get install mysql-client
      - mysql -h <IP-address-of-SQL-Instance> --user=root --password='testpass123!@#'
      - mysql>create database testdb;
@@ -54,7 +54,8 @@ A] Setup your developer workspace/Machine 1:
    - Make it Public
    - Generate a SSH Key pair for your developer workspace VM 
      and add it to your Bitbucket account
-     - Account -> Settings -> Add Key
+     - Account -> Bitbucket settings -> SSH keys -> Add key
+        - On your machine generate ssh key as follows (steps given for Linux/Unix):
         - ssh-keygen
         - It is fine if you provide an empty passphrase
 	- more ~/.ssh/id_rsa.pub
@@ -62,6 +63,7 @@ A] Setup your developer workspace/Machine 1:
         - When you paste the key, make sure that there are no extra spaces between the characters.
           The pasting operation will unevenly break the key into multiple lines. Find such lines
           and remove any extra spaces by hitting the Backspace key.
+          - Best approach is to copy and paste each line without leaving any spaces when you paste a line.
 
 8) Download Sample CI/CD project
    - git clone https://github.com/devdattakulkarni/CloudComputing
@@ -71,10 +73,13 @@ A] Setup your developer workspace/Machine 1:
      (Note: In the image tag don't include any version.
       i.e.: Define your image tag as: "gcr.io/<project-id>/greetings:latest" and NOT as
       "gcr.io/<project-id>/greetings:v1")
+   - Save and commit the modifications:
+     - git add
+     - git commit
 
    - Add a remote for your Bitbucket repository and Push the sample CI/CD project to that remote
      - cd ../../
-     - git remote add origin1 git@bitbucket.org:<your-bitbucket-username>/assignment6.git
+     - git remote add origin1 git@bitbucket.org:<your-bitbucket-username>/assignment4.git
      - git push origin1 master
 
 
@@ -111,12 +116,11 @@ B] Setup your Jenkins Server/Machine 2:
           The pasting operation will unevenly break the key into multiple lines. Find such lines
           and remove any extra spaces by hitting the Backspace key.
 
-     - Workaround (If running into SSH host key verification issues, you can disable it as follows):
-       - Disable Host key verification:
-         - create .ssh/config file
-         - Include following lines in it:
-           Host *
-                StrictHostKeyChecking no
+    - Disable Host key verification:
+      - create .ssh/config file
+      - Include following lines in it:
+        Host *
+            StrictHostKeyChecking no
 
 2) Configure authentication for gcloud CLI
    - gcloud auth login --> Follow the prompts (you will have to open browser window and paste the generated link,
@@ -128,28 +132,31 @@ B] Setup your Jenkins Server/Machine 2:
    - gcloud config set project ${PROJECT_ID}
 
 
-3) Download and Start Jenkins Server:
+3) Configure kubectl to connect to your GKE cluster
+   - gcloud container clusters get-credentials testcluster1
+
+4) Download and Start Jenkins Server:
    - wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
    - nohup java -jar jenkins.war --httpPort=8080  &
      -> This will start Jenkins process on port 8080
 
-4) Configure Jenkins Server
+5) Configure Jenkins Server
    - Point your browser to the DNS name of the Jenkins Server at port 8080
      https://<DNS-of-Jenkins-Server>:8080/
    - Enter admin password from $HOME/.jenkins/secrets/initialAdminPassword
    - Choose Install suggested plugins option
 
-5) Once Jenkins starts up do following:
-   5.1) Login as admin user
+6) Once Jenkins starts up do following:
+   6.1) Login as admin user
         - Password is stored in: $HOME/.jenkins/secrets/initialAdminPassword
-   5.2) Set the path in Jenkins for Git
+   6.2) Set the path in Jenkins for Git
         Jenkins -> Manage Jenkins -> Configure System -> Global Properties
         - Check Tool Locations
         - List of tool locations -> Add 
         - Set the path of Git from your VM
           (You can find the path by running 'which git' on VM)
         - Save
-   5.3) Install the Post build task Plugin and Bitbucket Plugin
+   6.3) Install the Post build task Plugin and Bitbucket Plugin
         Jenkins -> Manage Jenkins -> Manage Plugins
 	- In Available tab, search "Post build task" and select
 	- In Available tab, search "Bitbucket" and select
@@ -187,20 +194,13 @@ C] Add a WebHook to your Bitbucket repository
              - Notes:
                - First modify build-steps.txt to use your GCP Project ID
                - Make sure that the image tag that use here is what you defined 
-                 in deployment.yaml (Part A, step 7)
+                 in deployment.yaml (Part A, step 8)
    2.5) In Post-build Actions
         -> Add post-build action -> Post build task
           -> Log text "SUCCESS" -> Operation "-- OR --"
            -> In the Tasks -> Script section:
 	      - Add contents of deploy-steps.txt (modify the steps as required)
    2.6) Save
-
-   2.7) Bitbucket host key verification
-        
-	Once you hit 'Save', you will see a prompt to verify the key for bitbucket server.
-        This indicates that Jenkins has received the web hook and wants to clone your repository.
-        In order to clone the repo, it needs to first verify the host key. Enter 'yes' to accept
-        the specified host key.
 
 
 CI/CD Experiment:
@@ -213,18 +213,12 @@ CI/CD Experiment:
    - git commit
    - git push origin1 master
 
-3) If Part C step 2.7 was not executed for some reason, on the Jenkins server,
-   you should see a prompt to verify the key for bitbucket server.
-   This indicates that Jenkins has received the web hook and wants to clone your repository.
-   In order to clone the repo, it needs to first verify the host key. Enter 'yes' to accept
-   the specified host key.
-
-4) In the Jenkins Job you should see a new build triggered (visible under "Build History")
+3) In the Jenkins Job you should see a new build triggered (visible under "Build History")
    - Select the Build
    - Go to Console Output
    - Verify that the build and deploy steps have been executed
 
-5) On Machine 2 (Jenkins server):
+4) On Machine 2 (Jenkins server):
    - kubectl get ingress
      - Check the AGE field. It usually takes 7/8 minutes before the changes are reflected
        on the Ingress IP address
@@ -265,12 +259,9 @@ Troubleshooting:
    - On Machine 2 find out Jenkins process
      - ps -eaf | grep java
      - kill <process-id>
-   - Re-run Jenkins using the java command (Part B step 2)
+   - Re-run Jenkins using the java command (Part B step 4)
 
-2) Jenkins URL location
-   Jenkins -> Manage Jenkins -> Jenkins Location
-
-3) Jenkins workspace
+2) Jenkins workspace
    - On Jenkins Server at $HOME/.jenkins/workspace
    - This is the location where repository is cloned corresponding to Jenkins Jobs
 
