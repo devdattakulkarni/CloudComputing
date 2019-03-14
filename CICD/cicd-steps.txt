@@ -51,7 +51,7 @@ A] Setup your developer workspace/Machine 1:
 
 
 7) Create your Bitbucket repository named "assignment4"
-   - Make it Public
+   - Make it Private
    - Generate a SSH Key pair for your developer workspace VM 
      and add it to your Bitbucket account
      - Account -> Bitbucket settings -> SSH keys -> Add key
