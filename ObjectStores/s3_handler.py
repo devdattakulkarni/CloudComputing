@@ -37,6 +37,7 @@ class S3Handler:
         error_message_dict['not_implemented'] = 'Functionality not implemented yet!'
         error_message_dict['bucket_name_exists'] = 'Directory already exists.'
         error_message_dict['bucket_name_empty'] = 'Directory name cannot be empty.'
+        error_message_dict['non_empty_bucket'] = 'Directory is not empty.'
         error_message_dict['missing_source_file'] = 'Source file cannot be found.'
         error_message_dict['non_existent_bucket'] = 'Directory does not exist.'
         error_message_dict['non_existent_object'] = 'Destination Object does not exist.'
