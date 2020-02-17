@@ -33,6 +33,7 @@ class S3Handler:
     
     def _error_messages(self, issue):
         error_message_dict = {}
+        error_message_dict['operation_not_permitted'] = 'Not authorized to access resource.'
         error_message_dict['incorrect_parameter_number'] = 'Incorrect number of parameters provided'
         error_message_dict['not_implemented'] = 'Functionality not implemented yet!'
         error_message_dict['bucket_name_exists'] = 'Directory already exists.'
