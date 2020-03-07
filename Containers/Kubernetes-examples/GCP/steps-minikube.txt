@@ -1,0 +1,50 @@
+
+1. Download Minikube
+   - https://kubernetes.io/docs/tasks/tools/install-minikube/
+   
+
+2. Connect your docker cli to the Docker daemon running inside Minikube VM
+   - eval $(minikube docker-env)
+
+3. Minikube cluster
+   - minikube start --memory 4096
+
+4. Build docker image for your application
+   - You can name it greetings -- no need to include the repository name in the image name
+     since you are going to deploy the image on the local minikube cluster.
+
+5. Update the greetings-deployment-minikube.yaml with the image name
+   - Also, make sure that the env section in the yaml file contains
+     the appropriate values for the Gcloud SQL instance that you have spun up.
+
+6. Deploy the application
+   - kubectl apply -f greetings-deployment-minikube.yaml
+
+7. Expose the application 
+   - kubectl apply -f greetings-service.yaml
+     The service is of type NodePort. This will cause a random port on the Minikube VM
+     to be exposed on the VM and reachale from outside world.
+     You can check the port number that is exposed by using following command:
+     - kubectl get service
+
+8. Access the application
+   - For this you need to first find out the minikube VM's IP address and then you will
+     be able to access the application at the port that has been exposed available as
+     output of step 7.
+
+9. Get the minikube VM's ip address:
+   - minikube ip
+
+10. Access the application:
+    In the browser go to the following location:
+    http://<MINIKUBE_IP>:<exposed port>
+
+11. Modify the code.
+
+12. Rebuild the local image
+    - You can keep the image name as same, or you can change it.
+      Both should work. If you change the image name then make sure that you
+      modify the yaml file with the new image name.
+
+13. Redeploy the application
+    - kubectl apply -f greetings-deployment-minikube.yaml
