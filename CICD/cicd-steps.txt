@@ -51,8 +51,6 @@ A] Setup your developer workspace/Machine 1:
 
 
 7) Create your Bitbucket repository named "assignment4"
-   - Make it Public (for this assignment only). Making it public will allow it to be cloned
-     by the Jenkins Server. 
    - Generate a SSH Key pair for your developer workspace VM 
      and add it to your Bitbucket account
      - Account -> Bitbucket settings -> SSH keys -> Add key
@@ -181,8 +179,9 @@ C] Add a WebHook to your Bitbucket repository
               Issue->Created, Issue->Updated, Issue->Comment Created
          
 2) Set up a Jenkins Job on Jenkins VM
-   2.1) Make sure your Bitbucket repository ("assignment4") is Public
-        - This will make it possible to be cloned by Jenkins.
+   2.1) Make sure your Bitbucket repository ("assignment4") is Private
+        - Jenkins will be able to clone your private repo as you have configured Bitbucket
+          with Jenkin's VM key
    2.2) Jenkins -> New Item -> Give name -> Select Freestyle project
         -> Source Code Management -> Git -> Give Bitbucket Repository URL (using git protocol)
 	(e.g.: git@bitbucket.org:devdattakulkarni/assignment4.git)
