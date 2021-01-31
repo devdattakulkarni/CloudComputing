@@ -41,7 +41,7 @@ class S3Handler:
         error_message_dict['non_empty_bucket'] = 'Directory is not empty.'
         error_message_dict['missing_source_file'] = 'Source file cannot be found.'
         error_message_dict['non_existent_bucket'] = 'Directory does not exist.'
-        error_message_dict['non_existent_object'] = 'Destination Object does not exist.'
+        error_message_dict['non_existent_object'] = 'Destination File does not exist.'
         error_message_dict['unknown_error'] = 'Something was not correct with the request. Try again.'
 
         if issue:
@@ -109,7 +109,7 @@ class S3Handler:
         #    - Use self._get_file_extension() method to get the extension of the file.
 
         # Success response
-        # operation_successful = ('File %s uploaded to bucket %s.' % (source_file_name, bucket_name))
+        # operation_successful = ('File %s uploaded to directory %s.' % (source_file_name, bucket_name))
 
         return self._error_messages('not_implemented')
 
@@ -124,7 +124,7 @@ class S3Handler:
         # SDK Call
 
         # Success response
-        # operation_successful = ('Object %s downloaded from bucket %s.' % (dest_object_name, bucket_name))
+        # operation_successful = ('File %s downloaded from directory %s.' % (dest_object_name, bucket_name))
 
         return self._error_messages('not_implemented')
 
@@ -132,7 +132,7 @@ class S3Handler:
     def delete(self, dest_object_name, bucket_name):
         
         # Success response
-        # operation_successful = ('Object %s deleted from bucket %s.' % (dest_object_name, bucket_name))
+        # operation_successful = ('File %s deleted from directory %s.' % (dest_object_name, bucket_name))
         
         return self._error_messages('not_implemented')
 
@@ -141,7 +141,7 @@ class S3Handler:
         # Delete the bucket only if it is empty
         
         # Success response
-        # operation_successful = ("Deleted bucket %s." % bucket_name)
+        # operation_successful = ("Deleted directory %s." % bucket_name)
         
         return self._error_messages('not_implemented')
 
