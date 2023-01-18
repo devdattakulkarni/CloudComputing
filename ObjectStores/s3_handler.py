@@ -147,11 +147,7 @@ class S3Handler:
 
 
     def find(self, pattern, bucket_name=''):
-        # Return object names that match the given file extension
-
-        # If bucket_name is specified then search for objects in that bucket.
-        # If bucket_name is empty then search all buckets
-        
+        # Return object names that match the given pattern
 
         
         return self._error_messages('not_implemented')
