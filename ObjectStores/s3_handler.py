@@ -7,6 +7,7 @@ import traceback
 
 LOG_FILE_NAME = 'output.log'
 
+# Change region to match with the default region that you setup when configuring your AWS CLI
 REGION = 'us-west-2'
 
 class S3Handler:
@@ -28,7 +29,7 @@ class S3Handler:
         print("3. download <dest_object_name> <bucket_name> [<source_file_name>]")
         print("4. delete <dest_object_name> <bucket_name>")
         print("5. deletedir <bucket_name>")
-        print("6. find <file_extension> [<bucket_name>] -- e.g.: 1. find txt  2. find txt bucket1 --")
+        print("6. find <pattern> <bucket_name> -- e.g.: find txt bucket1 --")
         print("7. listdir [<bucket_name>]")
     
     def _error_messages(self, issue):
@@ -106,7 +107,6 @@ class S3Handler:
 
         # 3. SDK call
         #    - When uploading the source_file_name and add it to object's meta-data
-        #    - Use self._get_file_extension() method to get the extension of the file.
 
         # Success response
         # operation_successful = ('File %s uploaded to directory %s.' % (source_file_name, bucket_name))
@@ -146,7 +146,7 @@ class S3Handler:
         return self._error_messages('not_implemented')
 
 
-    def find(self, file_extension, bucket_name=''):
+    def find(self, pattern, bucket_name=''):
         # Return object names that match the given file extension
 
         # If bucket_name is specified then search for objects in that bucket.
@@ -196,9 +196,9 @@ class S3Handler:
             bucket_name = ''
             response = self.deletedir(bucket_name)
         elif parts[0] == 'find':
-            file_extension = ''
+            pattern = ''
             bucket_name = ''
-            response = self.find(file_extension, bucket_name)
+            response = self.find(pattern, bucket_name)
         elif parts[0] == 'listdir':
             bucket_name = ''
             response = self.listdir(bucket_name)

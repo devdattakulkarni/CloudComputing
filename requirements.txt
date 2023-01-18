@@ -1,5 +1,4 @@
 requests
-gevent
 boto3
 pyparsing
 six

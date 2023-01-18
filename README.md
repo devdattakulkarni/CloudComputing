@@ -9,7 +9,7 @@ Steps
 
 1) Create virtual environment
 
-   $ virtualenv venv
+   $ python3 -m venv venv 
 
    $ source venv/bin/activate
 
@@ -32,10 +32,15 @@ AWS setup
 1) Sign up for AWS
 
 2) Add AWS IAM user:
-   Login to AWS Dashboard -> My Security Credentials -> Continue to Security Credentials -> Users -> Add User
-
-3) Add permission to the user created:
-   Select user -> Add permissions -> Attach existing policies directly -> Search for "AmazonEC2FullAccess"
+   Go to IAM (Search in search box on the top) ->
+   Users -> Add User -> Select Access Key - Programmatic access for credential type
+   
+   For permission boundary, select Create user without a permissions
+   boundary. Then click next to create a user.
+   
+   After user is created, add permission : Select user -> Add
+   permissions -> Attach existing policies directly -> Search for
+   "AmazonS3FullAccess"
 
 4) Do AWS setup in your local account to allow SDK access to AWS.
    The sample examples will guide you through the setup process. You will be asked to enter
