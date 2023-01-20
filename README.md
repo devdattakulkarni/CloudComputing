@@ -50,6 +50,41 @@ AWS setup
    https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
 
 
+Vagrant setup
+-------------
+A Vagrantfile is provided to help with the setup of a development environment with all the required tools.
+It defines a Ubuntu VM and the tools that will be installed on it.
+Following tools will be installed as part of VM creation: aws cli, docker, google cloud cli, helm, kubectl, minikube
+Follow the below steps to get your Vagrant VM running.
+
+1) Install Vagrant:
+   - https://developer.hashicorp.com/vagrant/docs/installation
+
+2) Install VirtualBox:
+   - https://www.virtualbox.org/wiki/Downloads
+
+3) vagrant box add bento/ubuntu-18.04
+
+4) vagrant up
+
+5) vagrant ssh
+
+Once you login to the VM:
+- Check /vagrant directory.
+  it will be the directory on your host machine where you have the Vagrantfile 
+  - Any files that you want to copy from your host machine to the VM, place them in the directory where you have the Vagrantfile and access them from /vagrant path inside your VM.
+  - Any work that you do inside the /vagrant directory from inside the VM, it will be available from your host machine as well.
+
+- Check the tools have been installed properly. 
+  - aws --version
+  - docker --version
+  - gcloud --version
+  - kubectl version
+  - minikube version
+  - helm version
+
+
+
 Examples
 ---------
 1) VM: 
