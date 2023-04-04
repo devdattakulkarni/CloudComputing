@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.resourceName }} 
+spec:
+  ports:
+    - port: 80
+  selector:
+    tier: frontend-{{ .Values.resourceName }}
+  type: NodePort
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.resourceName }} 
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ .Values.resourceName }} 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: frontend-{{ .Values.resourceName }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        tier: frontend-{{ .Values.resourceName }}
+    spec:
+      containers:
+      - image: wordpress:4.8-apache
+        name: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: wordpress-mysql-{{ .Values.resourceName }}
+        - name: WORDPRESS_DB_PASSWORD
+          value: root123
+        ports:
+        - containerPort: 80
+          name: wordpress
+        volumeMounts:
+        - name: wordpress-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: wordpress-persistent-storage
+        persistentVolumeClaim:
+          claimName: {{ .Values.resourceName }} 
