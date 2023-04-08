@@ -55,7 +55,9 @@ You will use hosted Jenkins instance. We will provide the Jenkins URL and login 
 
 6) Create GKE cluster that will run your WordPress Helm chart
    - ./create-gke-cluster.sh <project-id> <cluster-name>
-   - NOTE that capital letters are not allowed in cluster name.
+   - NOTE:
+     - create-gke-cluster.sh is available in CloudComputing/CICD/containerized
+     - Capital letters are not allowed in cluster name.
 
 7) Once the cluster is created, you can open traffic to the ports on your cluster VM by following these steps:
    -  Go to VPC Network -> Firewall -> Select the rule that has following name:
@@ -144,8 +146,8 @@ CI/CD Experiment:
      - kubectl get pods -A
      - Get the ExternalIP of the VM of your cluster
        -> Google Cloud Console -> Compute Engine -> VM Instances
-     - curl -v https://<External IP>:30005/
-     - Open in browser: https://<External IP>:30005
+     - curl -v http://<External IP>:30005/
+     - Open in browser: http://<External IP>:30005
 
 5) Repeat steps 2-3-4 with different changes
 
