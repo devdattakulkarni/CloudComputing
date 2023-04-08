@@ -5,6 +5,7 @@ metadata:
 spec:
   ports:
     - port: 80
+      nodePort: 30005
   selector:
     tier: frontend-{{ .Values.resourceName }}
   type: NodePort
