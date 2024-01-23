@@ -49,7 +49,7 @@ class S3Handler:
         if issue:
             return error_message_dict[issue]
         else:
-            return error_message['unknown_error']
+            return error_message_dict['unknown_error']
 
     def _get_file_extension(self, file_name):
         if os.path.exists(file_name):
@@ -118,7 +118,7 @@ class S3Handler:
     def download(self, dest_object_name, bucket_name, source_file_name=''):
         # if source_file_name is not specified then use the dest_object_name as the source_file_name
         # If the current directory already contains a file with source_file_name then move it as a backup
-        # with following format: <source_file_name.bak.current_time_stamp_in_millis>
+        # with following format: <source_file_name.bak>
         
         # Parameter Validation
         
@@ -142,7 +142,7 @@ class S3Handler:
         # Delete the bucket only if it is empty
         
         # Success response
-        # operation_successful = ("Deleted directory %s." % bucket_name)
+        # operation_successful = ("Directory %s deleted." % bucket_name)
         
         return self._error_messages('not_implemented')
 
