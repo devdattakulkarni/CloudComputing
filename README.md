@@ -23,7 +23,8 @@ Steps
 
 4) Do AWS setup as outlined below
 
-5) Try examples as shown below
+Next, you will need to setup AWS CLI on your machine.
+You can do that using either the AWS setup or the Vagrant setup.
 
 
 AWS setup
@@ -42,9 +43,14 @@ AWS setup
    permissions -> Attach existing policies directly -> Search for
    "AmazonS3FullAccess"
 
-4) Do AWS setup in your local account to allow SDK access to AWS.
-   The sample examples will guide you through the setup process. You will be asked to enter
-   aws_access_key_id, aws_secret_access_key, region, and output format.
+3) Create Access Key for the User and download it as CSV to your machine.
+
+4) Install AWS CLI and then set it up:
+   - https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
+   - https://docs.aws.amazon.com/cli/latest/userguide/getting-started-quickstart.html#getting-started-quickstart-new-command
+   Use the ```aws configure``` command to configure the CLI.
+   
+   You will be asked to enter aws_access_key_id, aws_secret_access_key, region, and output format.
    You can find names of AWS regions at the following link:
 
    https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
