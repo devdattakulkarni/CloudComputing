@@ -38,11 +38,11 @@ class DynamoDBHandler:
                 response = self.create_and_load_data(args.table_name, args.file_name)
         elif action == 'insert_movie':
             if not self.check_valid_insert_movie_args(args):
-                response = 'Please provide the table name, title, year, \
-                    directors, actors, release_date and rating'
-                response = response + '\n' + 'Example usage: python dynamodb_handler.py \
-                    insert_movie --title "The Big New Movie" --year 2015 \
-                    --directors "Larry" --actors "Moe" --release_date "23 Jan 2018" --rating 5.5'
+                response = ('Please provide the table name, title, year, directors, ' +
+                    'actors, release_date, and rating\nExample usage: python ' +
+                    'dynamodb_handler.py insert_movie --title "The Big New Movie" ' +
+                    '--year 2015 --directors "Larry" --actors "Moe" ' +
+                    '--release_date "23 Jan 2018" --rating 5.5')
             else:
                 response = self.insert_movie(args.table_name, args.title, args.year, args.directors, args.actors, args.release_date, args.rating)
         elif action == 'delete_movie':
