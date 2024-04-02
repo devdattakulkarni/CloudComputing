@@ -135,11 +135,6 @@ CI/CD Experiment:
 
 4) On your Kubernetes cluster, check if the WordPress stack has been deployed or not
    - From your machine run
-     - gcloud auth activate-service-account --key-file <JSON key file from step 8>
-     - gcloud config set project <Your project ID>
-     - gcloud container clusters get-credentials <Your cluster name> --zone=us-central1-b
-
-     Then do:
      - kubectl get pods -A
        - Verify that the WordPress Pods are running
      - Get the ExternalIP of the VM of your cluster
