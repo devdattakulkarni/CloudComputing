@@ -1,0 +1,166 @@
+CI/CD workflow using Jenkins and Bitbucket
+-------------------------------------------
+
+Use your personal google account for this experiment.
+
+First, pull the latest code from CloudComputing git repo.
+
+cd CloudComputing
+git pull origin master
+
+Setup
+------
+In this experiment, you will setup continuous integration, continuous delivery
+using Jenkins. You will configure your BitBucket account with a webhook
+to trigger a Jenkins job. The Jenkins job will deploy WordPress helm chart
+on your Kubernetes cluster in Google cloud (GKE).
+
+You will need to create your own GKE cluster (steps given below).
+You will install Jenkins in your cluster.
+
+
+1) For this assignment, create a new **public** Bitbucket repository named "assignment4"
+   - Clone it on your machine
+     - git clone https://<your-bitbucket-username>/assignment4.git
+
+2) Setup following files in your assignment4 folder:
+   - cp -r CloudComputing/CICD/wp-chart assignment4/.
+   - cp CloudComputing/CICD/containerized/jenkins_on_gke/build.sh assignment4/.
+   - cp CloudComputing/CICD/containerized/jenkins_on_gke/deploy.sh assignment4/.
+   - cd assignment4
+   - git add wp-chart
+   - git add build.sh
+   - git add deploy.sh
+   - git commit
+     - enter some commit message
+   - git push origin master
+
+
+3) Install Google Cloud CLI on your machine
+   - Follow the instructions from: https://cloud.google.com/sdk/docs/install
+
+4) Configure authentication for gcloud CLI. We need this step to create GKE cluster
+   - gcloud auth login --> Follow the prompts (you will have to open browser window and paste the generated link,
+       then paste the generated code in the verification field in your console.)
+   - Create Project in Google Cloud Console --> Note down the Project ID. Remember that Project ID is different than the Project's Name.
+       You will need Project ID in subsequent steps.
+   - Set environment variables (Linux/MacOS use export command for this; for windows use set command)
+   - export PROJECT_ID=<Project-ID-from-previous-step>
+   - export CLOUDSDK_COMPUTE_ZONE=us-central1-b
+   - gcloud config set project ${PROJECT_ID}
+
+5) Enable Kubernetes Engine API for your project
+   - https://console.cloud.google.com/apis/library/browse?filter=category:compute&project=<your-project-name>
+
+6) Create GKE cluster that will run your WordPress Helm chart
+   - ./create-gke-cluster.sh <project-id> <cluster-name>
+   - NOTE:
+     - create-gke-cluster.sh is available in CloudComputing/CICD/containerized
+     - Capital letters are not allowed in cluster name.
+
+7) Once the cluster is created, you can open traffic to the ports on your cluster VM by following these steps:
+   -  Go to VPC Network -> Firewall -> Select the rule that has following name:
+      gke-cluster_name-<string of letters+numbers>-all
+   -> Hit Edit
+   -> In the Source IP ranges, enter: 0.0.0.0/0
+   -> Hit Save
+
+8) Setup Jenkins 
+   8.1) Install Helm
+   8.2) helm repo add bitnami https://charts.bitnami.com/bitnami
+   8.3) helm install jenkins jenkins-13.0.0.tgz  --set image.registry=gcr.io --set image.repository=cloudark-kubeplus/updated-bitnami-jenkins --set image.tag="latest"  --set jenkinsUser=<your-username> --set jenkinsPassword=<your-password> --set service.type=NodePort
+   8.4) kubectl get nodes -o=jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}'
+   8.5) kubectl get svc jenkins -o=jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
+   8.6) Grant jenkins ServiceAccount cluster-admin permissions: kubectl create -f jenkins-rbac.yaml
+   8.7) Jenkins URL: http://<IP-from-8.4>:<Port-from-8.5>
+   8.8) Install the Post build task Plugin and Bitbucket Plugin
+        - Bitbucket plugin will be used to clone Bitbucket repo
+        - Post build task plugin will be used to perform build and deploy tasks
+        Jenkins -> Manage Jenkins -> Manage Plugins
+	- In Available tab, search "Post build task" and select
+	- In Available tab, search "Bitbucket" and select
+	  (Note: There are several Bitbucket plugins -- you want to choose the one whose
+           name contains only the word "Bitbucket" and nothing else)
+	- Choose Install without restarting option
+   8.9) Set up a Jenkins Job 
+        8.9.1) Jenkins -> New Item -> Give name -> Select Freestyle project
+             -> Source Code Management -> Git -> Give your assignment 4 Bitbucket Repository URL (using https protocol)
+             -> Branches to build: */main
+        8.9.2) Build Triggers
+             -> Choose "Build when a change is pushed to BitBucket"
+        8.9.3) Buid Section -> Add a build step -> Execute Shell script
+             -> In the Execute shell Command section:
+                - Add contents of build.sh
+        8.9.4) In Post-build Actions
+             -> Add post-build action -> Post build task
+                -> Log text "SUCCESS" -> Operation "-- OR --"
+                   -> In the Tasks -> Script section:
+	              - Add contents of deploy.sh 
+                      - NOTE: (modify the deploy.sh steps to use your GCP Project ID and your cluster name.
+        8.9.5) Save
+        8.9.6) *** Manually trigger the Jenkins pipeline ***
+               - Build with Parameters
+                 - Choose the json file that you downloaded in step 8.
+                 - Hit Build
+                 - This will upload the file to your Jenkins instance and will be available when
+                   you do the CI/CD experiment by triggering builds from BitBucket. 
+
+9) Add a WebHook to your Bitbucket repository
+
+   Go to your Bitbucket repository -> Settings -> Webhooks -> Add webhook
+        - <Jenkins-url>/bitbucket-hook/
+          (Note: The trailing slash '/' is important. Don't forget that!!)
+        - Make Status as "Active"
+        - Check "Skip certificate verification"
+        - Triggers -> Choose from a full list of triggers
+          - Select following: 
+            - Repository->Push, Pull Request->Created, Updated, Comment created, Comment updated, Comment deleted
+              Issue->Created, Issue->Updated, Issue->Comment Created
+         
+
+CI/CD Experiment:
+-----------------
+1) Open the Jenkins URL in your browser and navigate to the job
+
+2) On your machine make changes to the wp-chart and push the code:
+   - Modify something in the YAML file (say, make replicaCount=2)
+   - git add
+   - git commit
+   - git push origin master
+
+3) If your CICD setup has been done properly, you should see a new build triggered (visible under "Build History")
+   - Select the Build
+   - Go to Console Output
+   - Verify that the build and deploy steps have been executed
+
+4) On your Kubernetes cluster, check if the WordPress stack has been deployed or not
+   - From your machine run
+     - gcloud auth activate-service-account --key-file <JSON key file from step 8>
+     - gcloud config set project <Your project ID>
+     - gcloud container clusters get-credentials <Your cluster name> --zone=us-central1-b
+
+     Then do:
+     - kubectl get pods -A
+       - Verify that the WordPress Pods are running
+     - Get the ExternalIP of the VM of your cluster
+       -> Google Cloud Console -> Compute Engine -> VM Instances
+     - curl -v http://<External IP>:30005/
+     - Open in browser: http://<External IP>:30005
+
+5) Repeat steps 2-3-4 with different changes
+
+
+
+Clean up:
+---------
+From Google Cloud Console:
+- Delete Kubernetes Cluster
+
+
+Troubleshooting:
+----------------
+
+
+
+Reference:
+-----------
