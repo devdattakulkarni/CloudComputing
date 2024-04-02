@@ -68,12 +68,13 @@ You will install Jenkins in your cluster.
 8) Setup Jenkins 
    8.1) Install Helm
    8.2) helm repo add bitnami https://charts.bitnami.com/bitnami
-   8.3) helm install jenkins jenkins-13.0.0.tgz  --set image.registry=gcr.io --set image.repository=cloudark-kubeplus/updated-bitnami-jenkins --set image.tag="latest"  --set jenkinsUser=<your-username> --set jenkinsPassword=<your-password> --set service.type=NodePort
-   8.4) kubectl get nodes -o=jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}'
-   8.5) kubectl get svc jenkins -o=jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
-   8.6) Grant jenkins ServiceAccount cluster-admin permissions: kubectl create -f jenkins-rbac.yaml
-   8.7) Jenkins URL: http://<IP-from-8.4>:<Port-from-8.5>
-   8.8) Install the Post build task Plugin and Bitbucket Plugin
+   8.3) helm pull bitnami/jenkins
+   8.4) helm install jenkins jenkins-13.0.0.tgz  --set image.registry=gcr.io --set image.repository=cloudark-kubeplus/updated-bitnami-jenkins --set image.tag="latest"  --set jenkinsUser=<your-username> --set jenkinsPassword=<your-password> --set service.type=NodePort
+   8.5) kubectl get nodes -o=jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}'
+   8.6) kubectl get svc jenkins -o=jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
+   8.7) Grant jenkins ServiceAccount cluster-admin permissions: kubectl create -f jenkins-rbac.yaml
+   8.8) Jenkins URL: http://<IP-from-8.5>:<Port-from-8.6>
+   8.9) Install the Post build task Plugin and Bitbucket Plugin
         - Bitbucket plugin will be used to clone Bitbucket repo
         - Post build task plugin will be used to perform build and deploy tasks
         Jenkins -> Manage Jenkins -> Manage Plugins
@@ -82,23 +83,23 @@ You will install Jenkins in your cluster.
 	  (Note: There are several Bitbucket plugins -- you want to choose the one whose
            name contains only the word "Bitbucket" and nothing else)
 	- Choose Install without restarting option
-   8.9) Set up a Jenkins Job 
-        8.9.1) Jenkins -> New Item -> Give name -> Select Freestyle project
+   8.10) Set up a Jenkins Job 
+        8.10.1) Jenkins -> New Item -> Give name -> Select Freestyle project
              -> Source Code Management -> Git -> Give your assignment 4 Bitbucket Repository URL (using https protocol)
              -> Branches to build: */main
-        8.9.2) Build Triggers
+        8.10.2) Build Triggers
              -> Choose "Build when a change is pushed to BitBucket"
-        8.9.3) Buid Section -> Add a build step -> Execute Shell script
+        8.10.3) Buid Section -> Add a build step -> Execute Shell script
              -> In the Execute shell Command section:
                 - Add contents of build.sh
-        8.9.4) In Post-build Actions
+        8.10.4) In Post-build Actions
              -> Add post-build action -> Post build task
                 -> Log text "SUCCESS" -> Operation "-- OR --"
                    -> In the Tasks -> Script section:
 	              - Add contents of deploy.sh 
                       - NOTE: (modify the deploy.sh steps to use your GCP Project ID and your cluster name.
-        8.9.5) Save
-        8.9.6) *** Manually trigger the Jenkins pipeline ***
+        8.10.5) Save
+        8.10.6) *** Manually trigger the Jenkins pipeline ***
                - Build with Parameters
                  - Choose the json file that you downloaded in step 8.
                  - Hit Build
@@ -114,8 +115,7 @@ You will install Jenkins in your cluster.
         - Check "Skip certificate verification"
         - Triggers -> Choose from a full list of triggers
           - Select following: 
-            - Repository->Push, Pull Request->Created, Updated, Comment created, Comment updated, Comment deleted
-              Issue->Created, Issue->Updated, Issue->Comment Created
+            - Repository->Push
          
 
 CI/CD Experiment:
