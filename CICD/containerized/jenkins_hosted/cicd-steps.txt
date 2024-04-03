@@ -16,8 +16,7 @@ to trigger a Jenkins job. The Jenkins job will deploy WordPress helm chart
 on your Kubernetes cluster in Google cloud (GKE).
 
 You will need to create your own GKE cluster (steps given below).
-
-You will use hosted Jenkins instance. We will provide the Jenkins URL and login credentials to you.
+You will install Jenkins in your cluster.
 
 
 1) For this assignment, create a new **public** Bitbucket repository named "assignment4"
@@ -78,8 +77,14 @@ You will use hosted Jenkins instance. We will provide the Jenkins URL and login 
    - The Service Account Key file in JSON format will be downloaded to your machine 
 
 9) Setup Jenkins 
-   9.1) Login to Jenkins
-   9.2) Install the Post build task Plugin and Bitbucket Plugin
+   9.1) Install Helm
+   9.2) helm repo add bitnami https://charts.bitnami.com/bitnami
+   9.3) helm install jenkins jenkins-13.0.0.tgz  --set image.registry=gcr.io --set image.repository=cloudark-kubeplus/updated-bitnami-jenkins --set image.tag="latest"  --set jenkinsUser=<your-username> --set jenkinsPassword=<your-password> --set service.type=NodePort
+   9.4) kubectl get nodes -o=jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}'
+   9.5) kubectl get svc jenkins -o=jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
+   9.6) Grant jenkins ServiceAccount cluster-admin permissions: kubectl create -f jenkins-rbac.yaml
+   9.7) Jenkins URL: http://<IP-from-9.4>:<Port-from-9.5>
+   9.8) Install the Post build task Plugin and Bitbucket Plugin
         - Bitbucket plugin will be used to clone Bitbucket repo
         - Post build task plugin will be used to perform build and deploy tasks
         Jenkins -> Manage Jenkins -> Manage Plugins
@@ -88,25 +93,25 @@ You will use hosted Jenkins instance. We will provide the Jenkins URL and login 
 	  (Note: There are several Bitbucket plugins -- you want to choose the one whose
            name contains only the word "Bitbucket" and nothing else)
 	- Choose Install without restarting option
-   9.3) Set up a Jenkins Job 
-        9.3.1) Jenkins -> New Item -> Give name -> Select Freestyle project
+   9.9) Set up a Jenkins Job 
+        9.9.1) Jenkins -> New Item -> Give name -> Select Freestyle project
              -> Source Code Management -> Git -> Give your assignment 4 Bitbucket Repository URL (using https protocol)
              -> Leave Branches to build as empty
-        9.3.2) Select "This project is parameterized" -> Choose File Parameter
+        9.9.2) Select "This project is parameterized" -> Choose File Parameter
                -> Choose File Location as "kubeconfig.json"
-        9.3.3) Build Triggers
+        9.9.3) Build Triggers
              -> Choose "Build when a change is pushed to BitBucket"
-        9.3.4) Buid Section -> Add a build step -> Execute Shell script
+        9.9.4) Buid Section -> Add a build step -> Execute Shell script
              -> In the Execute shell Command section:
                 - Add contents of build.sh
-        9.3.5) In Post-build Actions
+        9.9.5) In Post-build Actions
              -> Add post-build action -> Post build task
                 -> Log text "SUCCESS" -> Operation "-- OR --"
                    -> In the Tasks -> Script section:
 	              - Add contents of deploy.sh 
                       - NOTE: (modify the deploy.sh steps to use your GCP Project ID and your cluster name.
-        9.3.6) Save
-        9.3.7) *** Manually trigger the Jenkins pipeline ***
+        9.9.6) Save
+        9.9.7) *** Manually trigger the Jenkins pipeline ***
                - Build with Parameters
                  - Choose the json file that you downloaded in step 8.
                  - Hit Build

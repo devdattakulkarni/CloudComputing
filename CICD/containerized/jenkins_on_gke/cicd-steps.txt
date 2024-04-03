@@ -48,8 +48,11 @@ You will install Jenkins in your cluster.
    - export PROJECT_ID=<Project-ID-from-previous-step>
    - export CLOUDSDK_COMPUTE_ZONE=us-central1-b
    - gcloud config set project ${PROJECT_ID}
+   - If the first creation of project fails, you can use 
+     - gcloud projects create <your-proposed-project-id>
 
-5) Enable Kubernetes Engine API for your project
+5) Enable Google cloud billing account and enable Kubernetes Engine API for your project
+   - https://console.cloud.google.com/billing
    - https://console.cloud.google.com/apis/library/browse?filter=category:compute&project=<your-project-name>
 
 6) Create GKE cluster that will run your WordPress Helm chart
@@ -74,6 +77,7 @@ You will install Jenkins in your cluster.
    8.6) kubectl get svc jenkins -o=jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
    8.7) Grant jenkins ServiceAccount cluster-admin permissions: kubectl create -f jenkins-rbac.yaml
    8.8) Jenkins URL: http://<IP-from-8.5>:<Port-from-8.6>
+        - Login using <your-username> and <your-password>
    8.9) Install the Post build task Plugin and Bitbucket Plugin
         - Bitbucket plugin will be used to clone Bitbucket repo
         - Post build task plugin will be used to perform build and deploy tasks
