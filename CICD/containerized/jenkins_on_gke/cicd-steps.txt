@@ -53,13 +53,20 @@ You will install Jenkins in your cluster.
 
 5) Enable Google cloud billing account and enable Kubernetes Engine API for your project
    - https://console.cloud.google.com/billing
+     Make sure that you provide correct billing address. It was observed that providing incorrect address
+     can cause your account to get suspended.
    - https://console.cloud.google.com/apis/library/browse?filter=category:compute&project=<your-project-name>
 
 6) Create GKE cluster that will run your WordPress Helm chart
-   - ./create-gke-cluster.sh <project-id> <cluster-name>
+   - ./create-gke-cluster.sh <gcp-project-id> <cluster-name>
    - NOTE:
      - create-gke-cluster.sh is available in CloudComputing/CICD/containerized
      - Capital letters are not allowed in cluster name.
+     - If you are on Windows:
+       - open create-gke-cluster.sh in an editor
+       - change "$project" to <gcp-project-id>
+       - change "$clusterName" to <cluster-name>
+      - copy this command and run it directly from the console.
 
 7) Once the cluster is created, you can open traffic to the ports on your cluster VM by following these steps:
    -  Go to VPC Network -> Firewall -> Select the rule that has following name:
@@ -73,6 +80,7 @@ You will install Jenkins in your cluster.
    8.2) helm repo add bitnami https://charts.bitnami.com/bitnami
    8.3) helm pull bitnami/jenkins
    8.4) helm install jenkins jenkins-13.0.0.tgz  --set image.registry=gcr.io --set image.repository=cloudark-kubeplus/updated-bitnami-jenkins --set image.tag="latest"  --set jenkinsUser=<your-username> --set jenkinsPassword=<your-password> --set service.type=NodePort
+       8.4.1) jenkinsPassword should be at least 6 characters long.
    8.5) kubectl get nodes -o=jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}'
    8.6) kubectl get svc jenkins -o=jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
    8.7) Grant jenkins ServiceAccount cluster-admin permissions: kubectl create -f jenkins-rbac.yaml
@@ -90,10 +98,10 @@ You will install Jenkins in your cluster.
    8.10) Set up a Jenkins Job 
         8.10.1) Jenkins -> New Item -> Give name -> Select Freestyle project
              -> Source Code Management -> Git -> Give your assignment 4 Bitbucket Repository URL (using https protocol)
-             -> Branches to build: */main
+             -> Branches to build: */main (or */master depending on the default)
         8.10.2) Build Triggers
              -> Choose "Build when a change is pushed to BitBucket"
-        8.10.3) Buid Section -> Add a build step -> Execute Shell script
+        8.10.3) Buid Section -> Build Steps -> Execute Shell script
              -> In the Execute shell Command section:
                 - Add contents of build.sh
         8.10.4) In Post-build Actions
