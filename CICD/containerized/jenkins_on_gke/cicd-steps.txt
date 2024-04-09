@@ -111,12 +111,6 @@ You will install Jenkins in your cluster.
 	              - Add contents of deploy.sh 
                       - NOTE: (modify the deploy.sh steps to use your GCP Project ID and your cluster name.
         8.10.5) Save
-        8.10.6) *** Manually trigger the Jenkins pipeline ***
-               - Build with Parameters
-                 - Choose the json file that you downloaded in step 8.
-                 - Hit Build
-                 - This will upload the file to your Jenkins instance and will be available when
-                   you do the CI/CD experiment by triggering builds from BitBucket. 
 
 9) Add a WebHook to your Bitbucket repository
 
