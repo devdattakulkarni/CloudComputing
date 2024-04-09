@@ -79,7 +79,7 @@ You will install Jenkins in your cluster.
    8.1) Install Helm
    8.2) helm repo add bitnami https://charts.bitnami.com/bitnami
    8.3) helm pull bitnami/jenkins
-   8.4) helm install jenkins jenkins-13.0.0.tgz  --set image.registry=gcr.io --set image.repository=cloudark-kubeplus/updated-bitnami-jenkins --set image.tag="latest"  --set jenkinsUser=<your-username> --set jenkinsPassword=<your-password> --set service.type=NodePort
+   8.4) helm install jenkins jenkins-13.0.0.tgz  --set image.registry=gcr.io --set image.repository=cloudark-kubeplus/updated-bitnami-jenkins --set image.tag="2.440.2"  --set jenkinsUser=<your-username> --set jenkinsPassword=<your-password> --set service.type=NodePort
        8.4.1) jenkinsPassword should be at least 6 characters long.
    8.5) kubectl get nodes -o=jsonpath='{.items[0].status.addresses[?(@.type=="ExternalIP")].address}'
    8.6) kubectl get svc jenkins -o=jsonpath='{.spec.ports[?(@.name=="http")].nodePort}'
