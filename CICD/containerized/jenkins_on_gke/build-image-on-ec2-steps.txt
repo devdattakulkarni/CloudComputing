@@ -1,0 +1,51 @@
+On AWS console:
+- Spin up EC2 instance: AMI:Ubuntu latest, instance type: t2.medium 
+
+On your machine:
+- ssh -i "<your-dot-pem-file>" ubuntu@<your-ec2-instance-dns-name> 
+
+On EC2 VM:
+- sudo apt-get update -y
+- sudo apt-get install ca-certificates curl
+- sudo install -m 0755 -d /etc/apt/keyrings
+- sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+- sudo chmod a+r /etc/apt/keyrings/docker.asc
+- echo   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+- sudo apt-get update
+- sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+- sudo usermod -a -G docker ${USER}
+- exit
+
+On your machine:
+- ssh -i "<your-dot-pem-file>" ubuntu@<your-ec2-instance-dns-name> 
+
+On EC2 VM:
+- sudo apt-get update
+- sudo apt-get install apt-transport-https ca-certificates gnupg curl
+- curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+- curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+- echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+- sudo apt-get update && sudo apt-get install google-cloud-cli
+- gcloud init
+  - follow the prompts
+  - configure your gcloud project
+- gcloud auth configure-docker
+  - follow the prompts
+- docker run hello-world
+- docker tag hello-world:latest gcr.io/<your-project-id>/hello-world:april22-1
+- docker images
+- docker push gcr.io/<your-project-id>/hello-world:april22-1
+- docker images
+- exit
+
+On your machine:
+- Create tar gz of your assignment4 folder
+  - tar -cvf assignment4.tar assignment4
+- scp -i "<your-dot-pem-file>" assignment4.tar ubuntu@<your-ec2-instance-dns-name>:~/.
+- ssh -i "<your-dot-pem-file>" ubuntu@<your-ec2-instance-dns-name>
+
+On EC2 VM:
+- tar -xvf assignment4.tar
+- cd assignment4
+- docker build -t gcr.io/<your-project-id>/greetings:latest .
+- docker push gcr.io/<your-project-id>/greetings:latest

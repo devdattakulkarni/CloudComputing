@@ -50,6 +50,7 @@ You will install Jenkins in your cluster.
    - gcloud config set project ${PROJECT_ID}
    - If the first creation of project fails, you can use 
      - gcloud projects create <your-proposed-project-id>
+   - gcloud auth configure-docker
 
 5) Enable Google cloud billing account and enable Kubernetes Engine API for your project
    - https://console.cloud.google.com/billing
