@@ -24,6 +24,7 @@ class EC2ResourceHandler:
     def _get_ami_id(self):
         self.logger.info("Retrieving AMI id")
         images_response = self.client.describe_images(
+            Owners=['amazon'],
             Filters=[{'Name': 'architecture',
                       'Values': ['x86_64']},
                      {'Name': 'hypervisor',
@@ -41,7 +42,7 @@ class EC2ResourceHandler:
         for image in images:
             if 'Name' in image:
                 image_name = image['Name']
-                # Modify following line to search for Amazon Linux AMI for us-east-1
+                # Modify following line to search for Amazon Linux AMI for us-west-2
                 if image_name.find("ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-2018") >= 0:
                     ami_id = image['ImageId']
                     break
@@ -51,7 +52,7 @@ class EC2ResourceHandler:
         user_data = """
             #!/bin/bash
             yum update -y
-            yum install -y httpd24 php56 mysql55-server php56-mysqlnd
+            yum install -y httpd php
             service httpd start
             chkconfig httpd on
             groupadd www
@@ -139,10 +140,10 @@ def main():
     instance_id = ec2_handler.create()
     print("EC2 instance provisioning started")
 
-    raw_input("Hit Enter to continue>")
+    input("Hit Enter to continue>")
     ec2_handler.get(instance_id)
 
-    raw_input("Hit Enter to continue>")
+    input("Hit Enter to continue>")
     ec2_handler.delete(instance_id)
 
 
