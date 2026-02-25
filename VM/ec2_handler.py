@@ -3,9 +3,7 @@ import boto3
 import logging
 import os
 
-from common import common_functions
-
-LOG_FILE_NAME = 'output.log'
+LOG_FILE_NAME = 'ec2-output.log'
 
 class EC2ResourceHandler:
     """EC2 Resource handler."""
@@ -125,13 +123,6 @@ class EC2ResourceHandler:
 
 
 def main():
-
-    available_cloud_setup = common_functions.get_cloud_setup()
-    if 'aws' not in available_cloud_setup:
-        print("Cloud setup not found for aws.")
-        print("Doing the setup now..")
-        os.system("pip install awscli")
-        os.system("aws configure")
 
     ec2_handler = EC2ResourceHandler()
 
