@@ -289,7 +289,7 @@ devstack@placement-api.service   active (running)
 
 ```bash
 # Source credentials
-source /opt/stack/devstack/openrc admin admin
+source ~/devstack/openrc admin admin
 
 # Keystone
 openstack service list
