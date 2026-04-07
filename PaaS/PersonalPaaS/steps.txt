@@ -1,0 +1,74 @@
+PersonalPaaS Detailed Steps
+
+Assumptions used below:
+- AWS region: us-west-2
+- EC2 KeyPair name: assignment4
+- Private key file: assignment4.pem
+- Working directory: assignment5 (contains template.yaml, steps.txt, myapp/app.py, myapp/Dockerfile, myapp/requirements.txt)
+
+1. Go to the assignment folder
+cd assignment5
+
+2. Create EC2 VM for your personal PaaS
+aws cloudformation create-stack \
+  --stack-name personal-paas \
+  --template-body file://template.yaml \
+  --parameters ParameterKey=KeyName,ParameterValue=assignment4 \
+  --region us-west-2
+  --capabilities CAPABILITY_NAMED_IAM
+
+3. Wait for the Stack to complete
+aws cloudformation wait stack-create-complete \
+  --stack-name personal-paas \
+  --region us-west-2
+
+4. Get the EC2 VM's public ip address
+EC2_IP=$(aws cloudformation describe-stacks \
+  --stack-name personal-paas \
+  --query "Stacks[0].Outputs[0].OutputValue" \
+  --output text \
+  --region us-west-2
+)
+echo "$EC2_IP"
+
+5. Initialize the repo
+cd myapp
+git init -b main
+
+# add files
+git add .
+git commit -m "initial commit"
+
+6. Add the EC2 VM as a Git remote for your application
+git remote add paas ubuntu@"$EC2_IP":/home/ubuntu/app.git
+
+7. Push to the remote to trigger deployment
+GIT_SSH_COMMAND='ssh -i "<Path to your assignment4.pem>" -o StrictHostKeyChecking=accept-new' \
+git push paas main
+
+8. Verify deployment from browser or curl
+curl http://"$EC2_IP"
+# expected output: Hello from Personal PaaS!
+
+9. Test update flow
+sed -i '' 's/Hello from Personal PaaS!/Hello from Personal PaaS v2!/' app.py
+git add app.py
+git commit -m "update greeting"
+GIT_SSH_COMMAND='ssh -i "<Path to your assignment4.pem>" -o StrictHostKeyChecking=accept-new' \
+git push paas main
+sleep 5
+curl http://"$EC2_IP"
+# expected output: Hello from Personal PaaS v2!
+
+10. Optional debug commands (if deployment fails)
+ssh -i "<Path to your assignment4.pem>" ubuntu@"$EC2_IP" \
+  "sudo docker ps -a; echo '---'; sudo tail -n 100 /var/log/paas-deploy.log"
+
+11. Clean up AWS resources after testing
+aws cloudformation delete-stack \
+  --stack-name personal-paas \
+  --region us-west-2
+
+aws cloudformation wait stack-delete-complete \
+  --stack-name personal-paas \
+  --region us-west-2

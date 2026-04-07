@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Personal PaaS VM (Git-push-to-deploy)
+
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: EC2 KeyPair for SSH access
+
+Resources:
+  PaaSEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      KeyName: "" # Requirement 4: Inject the KeyName provided as a parameter
+      ImageId: "" # Requirement 5: Use Ubuntu 24.04 image for us-west-2
+
+      SecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          set -e
+
+          apt-get update -y
+          apt-get install -y docker.io git
+
+          systemctl start docker
+          systemctl enable docker
+
+          # Directories for app + logs
+          mkdir -p /home/ubuntu/app
+          mkdir -p /home/ubuntu/logs
+          chown -R ubuntu:ubuntu /home/ubuntu/app /home/ubuntu/logs
+
+          # Bare repo
+          sudo -u ubuntu git init --bare /home/ubuntu/app.git
+          sudo -u ubuntu git --git-dir=/home/ubuntu/app.git symbolic-ref HEAD refs/heads/main
+
+          # Create the deploy script 
+          cat << 'EOF' > /usr/local/bin/deploy.sh
+          #!/bin/bash
+          set -e
+
+          APP_DIR=/home/ubuntu/app
+          REPO_DIR=/home/ubuntu/app.git
+          LOG_FILE=/var/log/paas-deploy.log # Deployment logs
+          APP_LOG_FILE=/home/ubuntu/logs/app.log # App logs
+
+          exec >> $LOG_FILE 2>&1 # Replace the current shell and capture all the log output lines
+
+          echo "==== Deploy started at $(date) ===="
+
+          rm -rf $APP_DIR
+          mkdir -p $APP_DIR
+
+          git --work-tree=$APP_DIR --git-dir=$REPO_DIR checkout -f
+          cd $APP_DIR
+
+	  # Requirement 6: Build the docker container. Tag it myapp
+
+          docker stop myapp-container || true
+          docker rm myapp-container || true
+
+          pkill -f "docker logs -f myapp-container" || true
+
+	  # Requirement 7: Run the Docker container. Map the application port to port 80. Name the container myapp-container
+
+          mkdir -p /home/ubuntu/logs
+          touch $APP_LOG_FILE
+          chown -R ubuntu:ubuntu /home/ubuntu/logs
+
+          docker logs -f myapp-container >> $APP_LOG_FILE 2>&1 &
+
+          echo "==== Deploy finished ===="
+          EOF
+
+          chmod +x /usr/local/bin/deploy.sh
+          echo "ubuntu ALL=(ALL) NOPASSWD: /usr/local/bin/deploy.sh" > /etc/sudoers.d/deploy
+          chmod 440 /etc/sudoers.d/deploy
+
+          # Git post-receive hook
+          cat << 'EOF' > /home/ubuntu/app.git/hooks/post-receive
+          #!/bin/bash
+          sudo /usr/local/bin/deploy.sh
+          EOF
+
+          chmod +x /home/ubuntu/app.git/hooks/post-receive
+          chown -R ubuntu:ubuntu /home/ubuntu/app.git
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH and HTTP
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+        # Requirement 8: Add the security group for Port 80 to allow traffic from anywhere.
+
+Outputs:
+  PublicIP:
+    Value: !GetAtt PaaSEC2Instance.PublicIp
