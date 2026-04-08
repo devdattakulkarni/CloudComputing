@@ -54,17 +54,17 @@ Resources:
           rm -rf $APP_DIR
           mkdir -p $APP_DIR
 
-          git --work-tree=$APP_DIR --git-dir=$REPO_DIR checkout -f
+          sudo -u ubuntu git --work-tree=$APP_DIR --git-dir=$REPO_DIR checkout -f main
           cd $APP_DIR
 
-	  # Requirement 6: Build the docker container. Tag it myapp
+          # Requirement 6: Build the docker container. Tag it myapp
 
           docker stop myapp-container || true
           docker rm myapp-container || true
 
           pkill -f "docker logs -f myapp-container" || true
 
-	  # Requirement 7: Run the Docker container. Map the application port to port 80. Name the container myapp-container
+          # Requirement 7: Run the Docker container. Map the application port to port 80. Name the container myapp-container
 
           mkdir -p /home/ubuntu/logs
           touch $APP_LOG_FILE
